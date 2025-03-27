@@ -6,235 +6,235 @@
 
 <style>
 
-  
-    /* Required CSS for Advertisements with Mobile Adjustments */
-.advertisements-upper-menu,
-.advertisements-below-menu,
-.advertisements-left-side,
-.advertisements-right-side,
-.advertisements-below-footer {
-    width: 100%;
-    position: relative;
-    text-align: center;
-    padding: 10px 0;
-    z-index: 10; /* Lower than typical content (e.g., images at z-index 20) */
-}
+        
+            /* Required CSS for Advertisements with Mobile Adjustments */
+        .advertisements-upper-menu,
+        .advertisements-below-menu,
+        .advertisements-left-side,
+        .advertisements-right-side,
+        .advertisements-below-footer {
+            width: 100%;
+            position: relative;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 10; /* Lower than typical content (e.g., images at z-index 20) */
+        }
 
-.advertisements-left-side,
-.advertisements-right-side {
-    position: fixed;
-    top: 50%;
-    width: 278px;
-    max-width: 40%; /* Prevent overflow on small screens */
-}
+        .advertisements-left-side,
+        .advertisements-right-side {
+            position: fixed;
+            top: 50%;
+            width: 278px;
+            max-width: 40%; /* Prevent overflow on small screens */
+        }
 
-.advertisements-left-side {
-    left: 0;
-}
+        .advertisements-left-side {
+            left: 0;
+        }
 
-.advertisements-right-side {
-    right: 0;
-}
+        .advertisements-right-side {
+            right: 0;
+        }
 
-.advertisement {
-  display: none;
-  position: relative;
-  width: 80%;
-  max-width: 800px;
-  margin: 0 auto;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
+        .advertisement {
+        display: none;
+        position: relative;
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-.advertisements-left-side .advertisement,
-.advertisements-right-side .advertisement {
-    width: 100%;
-    max-width: 100%;
-}
+        .advertisements-left-side .advertisement,
+        .advertisements-right-side .advertisement {
+            width: 100%;
+            max-width: 100%;
+        }
 
-.advertisement img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-bottom: 10px;
-}
+        .advertisement img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
 
-.cancel-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 5px;
-    font-size: 14px;
-    z-index: 15; /* Slightly higher than ad, but still behind content */
-}
+        .cancel-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 14px;
+            z-index: 15; /* Slightly higher than ad, but still behind content */
+        }
 
-.cancel-btn:hover {
-    background: darkred;
-}
+        .cancel-btn:hover {
+            background: darkred;
+        }
 
-.fade-in {
-    animation: fadeIn 0.5s forwards;
-}
+        .fade-in {
+            animation: fadeIn 0.5s forwards;
+        }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-/* Mobile Adjustments */
-@media (max-width: 768px) {
-    .advertisements-left-side,
-    .advertisements-right-side {
-        position: static; /* Remove fixed positioning on mobile */
-        width: 100%;
-        max-width: 100%;
-        margin: 10px 0; /* Stack vertically */
-    }
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .advertisements-left-side,
+            .advertisements-right-side {
+                position: static; /* Remove fixed positioning on mobile */
+                width: 100%;
+                max-width: 100%;
+                margin: 10px 0; /* Stack vertically */
+            }
 
-    .advertisements-upper-menu,
-    .advertisements-below-menu,
-    .advertisements-below-footer {
-        padding: 5px 0; /* Reduce padding for mobile */
-    }
+            .advertisements-upper-menu,
+            .advertisements-below-menu,
+            .advertisements-below-footer {
+                padding: 5px 0; /* Reduce padding for mobile */
+            }
 
-    .advertisement {
-        max-width: 90%; /* Better fit on smaller screens */
-        margin: 10px auto; /* Reduce margin */
-        padding: 10px; /* Reduce padding */
-    }
+            .advertisement {
+                max-width: 90%; /* Better fit on smaller screens */
+                margin: 10px auto; /* Reduce margin */
+                padding: 10px; /* Reduce padding */
+            }
 
-    .cancel-btn {
-        top: 5px; /* Adjust for smaller ad size */
-        right: 5px;
-        padding: 3px; /* Smaller button on mobile */
-        font-size: 12px;
-    }
-}
+            .cancel-btn {
+                top: 5px; /* Adjust for smaller ad size */
+                right: 5px;
+                padding: 3px; /* Smaller button on mobile */
+                font-size: 12px;
+            }
+        }
 </style>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-      const ads = document.querySelectorAll('.advertisement');
-      ads.forEach((ad, index) => {
-          setTimeout(() => {
-              showAd(ad.id);
-          }, index * 1000);
-      });
-  
-      const totalImages = document.querySelectorAll('.carousel img').length;
-      document.getElementById('total-images').textContent = totalImages;
-      updateCarousel();
-  });
-  
-  function showAd(adId) {
-      const adElement = document.getElementById(adId);
-      if (adElement) {
-          adElement.classList.add('fade-in');
-          adElement.style.display = 'block';
-      }
-  }
-  
-  function cancelAd(adId) {
-      const adElement = document.getElementById(adId);
-      if (adElement) {
-          adElement.classList.remove('fade-in');
-          adElement.classList.add('fade-out');
-          setTimeout(() => {
-              adElement.style.display = 'none';
-              adElement.classList.remove('fade-out');
-              setTimeout(() => showAd(adId), 5000);
-          }, 500);
-      }
-  }
-  
-  let currentIndex = 0;
-  
-  function updateCarousel() {
-      const carousel = document.querySelector('.carousel');
-      const offset = -currentIndex * 1000;
-      carousel.style.transform = `translateX(${offset}px)`;
-  
-      const headings = document.querySelectorAll('.image-item input');
-      const descriptions = document.querySelectorAll('.image-item textarea');
-  
-      document.getElementById('image-heading').textContent = headings[currentIndex].value;
-      document.getElementById('image-description').textContent = descriptions[currentIndex].value;
-      document.getElementById('current-index').textContent = currentIndex + 1;
-  }
-  
-  function previousImage() {
-      const images = document.querySelectorAll('.carousel img');
-      currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
-      updateCarousel();
-  }
-  
-  function nextImage() {
-      const images = document.querySelectorAll('.carousel img');
-      currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
-      updateCarousel();
-  }
-  
-  function saveEdit(index) {
-      const heading = document.querySelectorAll('.image-item input')[index].value;
-      const description = document.querySelectorAll('.image-item textarea')[index].value;
-  
-      console.log(`Save heading: ${heading}, description: ${description}`);
-  }
-  
-  // AOS Initialization
-  AOS.init({
-      duration: 1000,
-      once: true,
-      easing: 'ease-in-out',
-  });
-  
-  // Popup Functionality
-  document.querySelectorAll('.darshan img').forEach(image => {
-      image.addEventListener('click', function (event) {
-          event.stopPropagation();
-  
-          const popup = document.createElement('div');
-          popup.className = 'popup';
-          popup.innerHTML = `
-              <div class="popup-content">
-                  <span class="close-btn">&times;</span>
-                  <img src="${this.src}" alt="Full Size Image">
-              </div>
-          `;
-  
-          document.body.appendChild(popup);
-          popup.style.display = 'block';
-  
-          popup.addEventListener('dblclick', function () {
-              this.querySelector('.popup-content').classList.toggle('fullscreen');
-          });
-  
-          popup.querySelector('.close-btn').addEventListener('click', function (e) {
-              e.stopPropagation();
-              popup.remove();
-          });
-  
-          popup.addEventListener('click', function (e) {
-              if (e.target === popup) {
-                  popup.remove();
-              }
-          });
-      });
-  });
-  
+            document.addEventListener('DOMContentLoaded', () => {
+                const ads = document.querySelectorAll('.advertisement');
+                ads.forEach((ad, index) => {
+                    setTimeout(() => {
+                        showAd(ad.id);
+                    }, index * 1000);
+                });
+            
+                const totalImages = document.querySelectorAll('.carousel img').length;
+                document.getElementById('total-images').textContent = totalImages;
+                updateCarousel();
+            });
+            
+            function showAd(adId) {
+                const adElement = document.getElementById(adId);
+                if (adElement) {
+                    adElement.classList.add('fade-in');
+                    adElement.style.display = 'block';
+                }
+            }
+            
+            function cancelAd(adId) {
+                const adElement = document.getElementById(adId);
+                if (adElement) {
+                    adElement.classList.remove('fade-in');
+                    adElement.classList.add('fade-out');
+                    setTimeout(() => {
+                        adElement.style.display = 'none';
+                        adElement.classList.remove('fade-out');
+                        setTimeout(() => showAd(adId), 5000);
+                    }, 500);
+                }
+            }
+            
+            let currentIndex = 0;
+            
+            function updateCarousel() {
+                const carousel = document.querySelector('.carousel');
+                const offset = -currentIndex * 1000;
+                carousel.style.transform = `translateX(${offset}px)`;
+            
+                const headings = document.querySelectorAll('.image-item input');
+                const descriptions = document.querySelectorAll('.image-item textarea');
+            
+                document.getElementById('image-heading').textContent = headings[currentIndex].value;
+                document.getElementById('image-description').textContent = descriptions[currentIndex].value;
+                document.getElementById('current-index').textContent = currentIndex + 1;
+            }
+            
+            function previousImage() {
+                const images = document.querySelectorAll('.carousel img');
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
+                updateCarousel();
+            }
+            
+            function nextImage() {
+                const images = document.querySelectorAll('.carousel img');
+                currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
+                updateCarousel();
+            }
+            
+            function saveEdit(index) {
+                const heading = document.querySelectorAll('.image-item input')[index].value;
+                const description = document.querySelectorAll('.image-item textarea')[index].value;
+            
+                console.log(`Save heading: ${heading}, description: ${description}`);
+            }
+            
+            // AOS Initialization
+            AOS.init({
+                duration: 1000,
+                once: true,
+                easing: 'ease-in-out',
+            });
+            
+            // Popup Functionality
+            document.querySelectorAll('.darshan img').forEach(image => {
+                image.addEventListener('click', function (event) {
+                    event.stopPropagation();
+            
+                    const popup = document.createElement('div');
+                    popup.className = 'popup';
+                    popup.innerHTML = `
+                        <div class="popup-content">
+                            <span class="close-btn">&times;</span>
+                            <img src="${this.src}" alt="Full Size Image">
+                        </div>
+                    `;
+            
+                    document.body.appendChild(popup);
+                    popup.style.display = 'block';
+            
+                    popup.addEventListener('dblclick', function () {
+                        this.querySelector('.popup-content').classList.toggle('fullscreen');
+                    });
+            
+                    popup.querySelector('.close-btn').addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        popup.remove();
+                    });
+            
+                    popup.addEventListener('click', function (e) {
+                        if (e.target === popup) {
+                            popup.remove();
+                        }
+                    });
+                });
+            });
+            
 </script>
 <main class="main">
 <!-- HTML for below-menu -->
@@ -327,9 +327,9 @@
   {% endfor %}
 </div>
 
-
     <!-- Hero Section -->
     <section id="hero" class="hero section dark-background">
+
 
       <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
         {% for image in images %}
@@ -338,7 +338,7 @@
           <div class="carousel-container">
             <h2> {{ image.heading|title }}<br></h2>
             <p>{{ image.description|capfirst }}</p>
-            <a href="{% url 'blog_detail' image.id %}" class="btn-get-started">Get Started</a>
+            <a href="{% url 'myapp:blog_detail' image.id %}" class="btn-get-started">Get Started</a>
           </div>
         </div><!-- End Carousel Item -->
         {% endfor %}
@@ -432,15 +432,15 @@
                                                 </h2>
                                                 <div class="meta-top">
                                                     <ul>
-                                                        <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="{% url 'blog_detail' image.id %}">PandharpurGuide</a></li>
-                                                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="{% url 'blog_detail' image.id %}"><time datetime="{{ image.created_at|date:'Y-m-d H:i:s' }}">{{ image.created_at|date:'M d, Y' }}</time></a></li>
-                                                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="{% url 'blog_detail' image.id %}">{{ image.comments.count }} Comments</a></li>
+                                                        <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="{% url 'myapp:blog_detail' image.id %}">PandharpurGuide</a></li>
+                                                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="{% url 'myapp:blog_detail' image.id %}"><time datetime="{{ image.created_at|date:'Y-m-d H:i:s' }}">{{ image.created_at|date:'M d, Y' }}</time></a></li>
+                                                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="{% url 'myapp:blog_detail' image.id %}">{{ image.comments.count }} Comments</a></li>
                                                     </ul>
                                                 </div>
                                                 <div class="content">
                                                     <p>{{ image.description|highlight:search_query }}</p>
                                                     <div class="read-more">
-                                                        <a href="{% url 'blog_detail' image.id %}">Read More</a>
+                                                        <a href="{% url 'myapp:blog_detail' image.id %}">Read More</a>
                                                     </div>
                                                 </div>
                                             </article>
@@ -480,7 +480,7 @@
                             
                             <form action="" method="get" id="search-form">
                                 <input type="text" name="q" value="{{ search_query }}" placeholder="Search...">
-                                <a href="{% url 'home' %}#blog-posts"> <button type="submit" title="Search"><i class="bi bi-search"></i></button> </a>
+                                <a href="{% url 'myapp:home' %}#blog-posts"> <button type="submit" title="Search"><i class="bi bi-search"></i></button> </a>
                             </form>
                         </div>
 
@@ -504,7 +504,7 @@
                                         <img src="{{ image.image.url }}" alt="{{ image.heading }}" class="flex-shrink-0">
                                         <div>
                                             <h4>
-                                                <a href="{% url 'blog_detail' image.id %}">
+                                                <a href="{% url 'myapp:blog_detail' image.id %}">
                                                     {{ forloop.counter }}. {{ image.heading|highlight:search_query }}
                                                 </a>
                                             </h4>

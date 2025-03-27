@@ -13,6 +13,7 @@ app_name = 'user'
 urlpatterns = [
     path('signups/', views.staff_signup, name='staff_signup'),
     path('signins/', views.staff_signin, name='staff_signin'),
+    path('logout/', views.staff_logout_view, name='staff_logout'),
     
     # Uncommented and fixed staff_verify_email URL
     path('staff/verify-email/<uidb64>/<token>/', views.staff_verify_email, name='staff_verify_email'),
@@ -28,7 +29,7 @@ urlpatterns = [
     # User-related paths (non-staff)
     path('signup', views.signup, name='signup'),
     path('signin', views.signin, name='signin'),
-    path('logout', views.logout_view, name='logout_view'),
+    path('logout', views.logout_view, name='user_logout'),
     path('verify_email/<str:uidb64>/<str:token>/', views.verify_email, name='verify_email'),
 
     # User Password Reset

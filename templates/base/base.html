@@ -5,15 +5,15 @@
 {% load static %}
   <header id="header" class="header d-flex align-items-center sticky-top">
       <div class="container-fluid container-xl position-relative d-flex align-items-center">
-        <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto">
+        <a href="{% url 'myapp:home' %}" class="logo d-flex align-items-center me-auto">
           <h1 class="sitename"><img src="{% static 'assets/img/logo.png' %}" alt="">  PandharpurGuide</h1>
         </a>
     
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="{% url 'home' %}#hero"class="active">Home</a></li>
+            <li><a href="{% url 'myapp:home' %}#hero"class="active">Home</a></li>
             
-            <li class="dropdown"><a href="{% url 'home'%}#about"><span>About</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <li class="dropdown"><a href="{% url 'myapp:home'%}#about"><span>About</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
                 <li><a href="team.html">Team</a></li>
                 <li><a href ="#blog-posts">PostsDetail</a></li>

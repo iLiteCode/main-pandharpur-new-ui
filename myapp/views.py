@@ -3,6 +3,8 @@ from django.db.models import Q
 from .models import Image, Advertisement, Comment
 from .forms import ImageForm, AdvertisementForm
 
+
+
 # Home view (blog list)
 def home(request):
     images = Image.objects.all()

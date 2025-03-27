@@ -1,13 +1,15 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification Success</title>
+    <title>Email Verification Failure</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-      * {
+<style>
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -15,17 +17,12 @@
     }
     
     body {
-        background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         overflow-x: hidden;
-        background-image:url('Ppur1.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-
     }
     
     .container {
@@ -35,14 +32,12 @@
     }
     
     .card {
-        background: #f1fbff;
+        background: #fff;
         border-radius: 15px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         padding: 40px;
         text-align: center;
         animation: fadeIn 1s ease-in-out;
-       
-
     }
     
     .icon {
@@ -50,14 +45,14 @@
         margin-bottom: 20px;
     }
     
-    .success-icon {
+    .timeout-icon {
         display: inline-block;
-        animation: bounce 1s infinite;
+        animation: spin 2s infinite linear;
     }
     
     .title {
         font-size: 28px;
-        color: #2ecc71;
+        color: #e74c3c;
         margin-bottom: 10px;
         font-weight: 600;
     }
@@ -102,8 +97,8 @@
         font-weight: 600;
     }
     
-    .explore-btn {
-        background: #2ecc71;
+    .support-btn {
+        background: #3498db;
         color: #fff;
         border: none;
         padding: 12px 25px;
@@ -113,8 +108,8 @@
         transition: background 0.3s, transform 0.2s;
     }
     
-    .explore-btn:hover {
-        background: #27ae60;
+    .support-btn:hover {
+        background: #2980b9;
         transform: scale(1.05);
     }
     
@@ -129,10 +124,9 @@
         to { transform: translateY(0); opacity: 1; }
     }
     
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-15px); }
-        60% { transform: translateY(-7px); }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
     /* Responsive Design */
@@ -153,36 +147,53 @@
             font-size: 14px;
         }
     
-        .explore-btn {
+        .support-btn {
             padding: 10px 20px;
             font-size: 14px;
         }
     }
-    </style>
+</style>
 </head>
 <body>
     <div class="container">
         <div class="card">
             <div class="icon">
-                <span class="success-icon">✅</span>
+                <span class="timeout-icon">⏳</span>
             </div>
-            <h1 class="title">Email Verification Successful</h1>
-            <h2 class="subtitle">Welcome to Pandhrpur Guide!</h2>
+            <h1 class="title">Email Verification Failure</h1>
+            <h2 class="subtitle">Email Verification Failed</h2>
             <p class="message">
-                Congratulations! Your email has been successfully verified.<br>
-                You’re now part of our community. Explore our services and enjoy your journey with us!
+                Sorry, the email verification link is invalid or has expired.<br>
+                Please contact support for further assistance.
             </p>
             <div class="company-info">
-                <p><strong>Company:</strong> <a href="https://www.ilitecode.com/" target="_blank">www.ilitecode.com</a></p>
-                <p><strong>Contact:</strong> <span class="contact-no">+91 81272 88127</span></p>
-                <p><strong>About Us:</strong> We are providig Guidence in Pandhrpur through PandhrpurGuide...</p>
+                <p><strong>Company:</strong> <a href="https://www.example.com" target="_blank">LiteCode Software PVT Ltd</a></p>
+                <p><strong>Contact:</strong> <span class="contact-no">+91 9172353945</span></p>
+                <p><strong>About Us:</strong> We are a leading tech company dedicated to providing innovative solutions.</p>
             </div>
-            <button class="explore-btn" onclick="goToHome()">Explore Now</button>
+            <button class="support-btn" onclick="showSupportMessage()">Contact Support</button>
         </div>
     </div>
-    <script >function goToHome() {
-      // Replace with your actual homepage URL
-      window.location.href = "{% url 'user:user_profile' %}";
-  }</script>
+    <script>
+        function showSupportMessage() {
+            alert("Please reach out to our support team at +91 9172353945  or email us at support LiteCode Software PVT Ltd for assistance!");
+        }
+    </script>
 </body>
 </html>
+
+
+
+{% comment %} 
+
+{% block title %}Email Verification Failure{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="verification-message">
+      <h2>Email Verification Failed</h2>
+      <p>Sorry, the email verification link is invalid or has expired.</p>
+      <p>Please contact support for further assistance.</p>
+    </div>
+  </div>
+{% endblock %} {% endcomment %}

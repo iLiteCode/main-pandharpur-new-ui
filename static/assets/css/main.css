@@ -68,7 +68,7 @@
 }
 
 .cancel-btn:hover {
-  color: #dc3545;
+  color: #35dc46;
 }
 
 .btn {
@@ -268,26 +268,29 @@
   
   .btn-login:hover {
       background-color: #fff8f3;
+      border: 1px solid #000000;
   }
   
   .btn-contact {
-    background-color: #FF6600;
-    color: black; 
+    background-color: transparent;
+    color: white;
+    border: 2px solid #000000;
   }
 
   .btn-contact a {
-      color: black; 
+      color: #008cff; 
       text-decoration: none; 
   }
   
   
   .btn-inquiry {
-    background-color: #008CBA;  
+    background-color: transparent;  
     color: white;
+    border: 2px solid #000000;
 }
 
 .btn-inquiry a {
-    color: white; 
+    color: #008cff; 
     text-decoration: none;
 }
   

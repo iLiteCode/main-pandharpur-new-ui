@@ -10,6 +10,9 @@
   margin: 2rem auto;
   text-align: center;
 }
+.btn{
+  color:black;
+}
 
 .google-btn button {
   width: 184px;
@@ -124,9 +127,10 @@ a:hover {
 
 form {
   width: 50%;
-  padding-top: 1px;
+  padding-top: 41px;
   padding-right: 60px;
   padding-left: 15px;
+  padding-bottom: 30px;
 }
 
 h3 {
@@ -308,7 +312,7 @@ button:hover {
   }
   form {
     width: 100%;
-    padding: 50px 15px 70px;
+    padding-top: 42px;
   }
   .wrapper {
     background: none;

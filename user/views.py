@@ -15,6 +15,10 @@ from django.contrib import messages
 from .models import User, HotelStaff, Maintainer
 import random
 import logging
+from django.utils import timezone
+import pytz
+from django.contrib.auth import login, logout, authenticate
+
 
 
 
@@ -130,7 +134,12 @@ def staff_signin(request):
             if authenticated_user.is_staff and authenticated_user.is_active:
                 request.session['username'] = username
                 login(request, authenticated_user)
-                return redirect('/')
+                ist = pytz.timezone('Asia/Kolkata')
+                signin_time = timezone.now().astimezone(ist).strftime('%Y-%m-%d %H:%M:%S')
+
+                messages.success(request, f'Welcome {username}, your Staff login was successful at {signin_time}.')
+
+                return redirect('myapp:home')
             else:
                 return render(request, 'staff_login/staff_signin.html', {'message': 'Account is not authorized for staff access.'})
 
@@ -138,13 +147,19 @@ def staff_signin(request):
 
     return render(request, 'staff_login/staff_signin.html')
 
-# Staff Logout
+
+# Staff Logout View
 def staff_logout_view(request):
     if request.user.is_authenticated and request.user.is_staff:
+        username = request.user.username  # Get the username for the message
         logout(request)
         request.session.flush()
-        return redirect('user:staff_signin')
-    return redirect('user:staff_signin')
+        # Add the message with the username dynamically
+        messages.warning(request, f'Goodbye {username}, you’ve logged out successfully as a Staff.')
+        return redirect('user:staff_signin')  # Redirect to the sign-in page
+    return redirect('user:staff_signin') 
+
+ 
 
 # Staff Password Reset View
 class StaffCustomPasswordResetView(PasswordResetView):
@@ -272,6 +287,7 @@ def verify_email(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         return render(request, 'user_login/verification_failure.html')
 
+
 # User Signin
 def signin(request):
     if request.user.is_authenticated and request.user.is_active:
@@ -297,18 +313,29 @@ def signin(request):
         if authenticated_user is not None and authenticated_user.is_active:
             request.session['username'] = username
             login(request, authenticated_user)
-            return redirect('/')
+
+            ist = pytz.timezone('Asia/Kolkata')
+            signin_time = timezone.now().astimezone(ist).strftime('%Y-%m-%d %H:%M:%S')
+
+            messages.success(request, f'Signin successful at {signin_time}')
+
+            return redirect('myapp:home')
+        
         return render(request, 'user_login/signin.html', {'message': 'Incorrect username or password'})
 
     return render(request, 'user_login/signin.html')
+
 
 # User Logout
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
         request.session.flush()
-        return render(request, 'index.html', {'message': 'Logged out successfully'})
-    return redirect('user:signin')
+        
+        messages.warning(request, 'Logged out successfully')
+        
+        return redirect('user:signin')  
+    return redirect('user:signin') 
 
 # User Password Reset View
 class CustomPasswordResetView(PasswordResetView):
@@ -385,13 +412,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 
 
-
-    # userprofile and staff too bro
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
-from django.contrib import messages
-from .models import User, HotelStaff
-import random
 
 def generate_staff_id():
     while True:

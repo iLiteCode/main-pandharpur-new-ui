@@ -67,12 +67,31 @@
               <div class="auth-buttons">
                   
                       {% if user.is_authenticated %}
-                    
-                          <a href="{% url 'user:user_profile' %}" style="color: red;">
+
+                          {% if user.is_staff%}
+                          <a href="{% url 'user:staff_profile' %}" style="color: red;">
                             <button class="btn btn-login">
-                              <i class="fas fa-user-circle"></i> My Account
+                              <i class="fas fa-user-circle"></i> staff account
                             </button>
                           </a>
+
+                          {% elif user.maintainer_profile %}
+                    
+                          <a href="{% url 'user:maintainer_profile' %}" style="color: red;">
+                            <button class="btn btn-login">
+                              <i class="fas fa-user-circle"></i> maintainer account
+                            </button>
+                          </a>
+                          {% else %}
+                           
+                          <a href="{% url 'user:user_profile' %}" style="color: red;">
+                            <button class="btn btn-login">
+                              <i class="fas fa-user-circle"></i> user profile 
+                            </button>
+                          </a>
+                           
+                          {% endif %}
+                          
                       {% else %}
                           <a href="{% url 'user:signin' %}">
                             <button class="btn btn-login">
