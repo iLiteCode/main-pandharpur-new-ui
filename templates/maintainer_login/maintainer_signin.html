@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block title %}Staff-SignIn{% endblock %}
+{% block title %}Maintainer-SignIn{% endblock %}
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -21,11 +21,11 @@
                 <img src="{% static 'imgs/first.jpg'%}" alt="">
             </div>
             
-            <form action="{% url 'user:staff_signin' %}" method="POST" id="signin-form">
-                <h3>Staff Sign In</h3>
+            <form action="{% url 'user:maintainer_signin' %}" method="POST" id="signin-form">
+                <h3>Maintainer Sign In</h3>
                 {% csrf_token %}
                 <div class="popup-container">
-                    {%if  message  %}
+                    {% for message in messages %}
                     <div class="popup alert-{{ message.tags }}" role="alert">
                         <button class="cancel-btn" aria-label="Cancel">×</button>
                         <div class="popup-content">
@@ -35,11 +35,11 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
                   
                 <div class="form-holder">
-                    <input type="email" class="form-control" name="username" placeholder="Email" required>
+                    <input type="text" class="form-control" name="username" placeholder="Username" required>
                 </div>
                 <div class="form-holder" style="position: relative;">
                     <input type="password" placeholder="Password" name="password" class="form-control" id="password" required>
@@ -58,8 +58,8 @@
                 </div>
                 <br><br><br>
                 <div class="forgot-pass">
-                    <p>Don't have an account? <a href="{% url 'user:staff_signup' %}">Sign up</a></p><br>
-                    Forgot Password? <a href="{% url 'user:staff_password_reset' %}">Click Here</a>
+                    <p>Don't have an account? <a href="{% url 'user:maintainer_signup' %}">Sign up</a></p><br>
+                    Forgot Password? <a href="{% url 'user:maintainer_password_reset' %}">Click Here</a>
                 </div>
             </form>
         </div>

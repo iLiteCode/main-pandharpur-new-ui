@@ -1,3 +1,157 @@
+/* call button */
+
+      /*  Styles */
+      body {
+        justify-content: center;
+        min-height: 100vh;
+        transition: background 0.4s, color 0.4s;
+      }
+
+      body.light {
+        background: #f3f4f6;
+        color: #111827;
+      }
+
+      .header{
+        background-color: #ffffff;
+        color: #f3f4f6;
+        
+      }
+      .progress .progress-value{
+        background-color:white;
+      }
+
+      /* Apply dark theme to body and sections */
+      body:has(.hidden-checkbox:checked) {
+        background: #111827;
+        color: #f3f4f6;
+      }
+
+      /* Ensure sections also turn dark */
+     
+        body:has(.hidden-checkbox:checked).dark-background,
+        body:has(.hidden-checkbox:checked) header,
+        body:has(.hidden-checkbox:checked) .header-container,
+        body:has(.hidden-checkbox:checked) .page-title,
+        body:has(.hidden-checkbox:checked) .blog-posts article,
+        body:has(.hidden-checkbox:checked) .card-body,
+        body:has(.hidden-checkbox:checked) .tr,
+        body:has(.hidden-checkbox:checked) .sidebar,
+        body:has(.hidden-checkbox:checked) .header,
+        body:has(.hidden-checkbox:checked) .detail-card,
+        body:has(.hidden-checkbox:checked) .booking-stats
+        body:has(.hidden-checkbox:checked) .font-weight-bold,         body:has(.hidden-checkbox:checked) .footer  {
+          background: #111827;
+          color: #f3f4f6;
+          border: 1px solid white
+          
+        }
+              
+      
+        body:has(.hidden-checkbox:checked) .navmenu ul,
+        body:has(.hidden-checkbox:checked) section,
+        body:has(.hidden-checkbox:checked) .widgets-container
+        body:has(.hidden-checkbox:checked) .progress-left ,
+        body:has(.hidden-checkbox:checked) .progress-right,         
+        body:has(.hidden-checkbox:checked) .progress-bar,
+        body:has(.hidden-checkbox:checked) .progress .progress-left  {
+          background: #111827;
+          color: #f3f4f6;
+          
+        }
+
+        
+        body:has(.hidden-checkbox:checked) .profile-section{
+          background: #111827;
+          color: #f3f4f6;
+          border-top:1px solid white;
+          border-right:1px solid white;
+          border-bottom:1px solid white;
+          
+        }
+
+        @media screen and (max-width:1198px) {
+          body:has(.hidden-checkbox:checked) .navmenu ul {
+            border: 1px solid white
+            
+          }
+          
+        }
+
+
+
+
+      
+
+     
+      /* Rest of your toggle button and  styles remain unchanged */
+      .hidden-checkbox {
+        display: none;
+      }
+
+      .toggle-button {
+        background: #e5e7eb;
+        border: 1px solid ;
+        padding: 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        transition: background 0.3s, transform 0.5s ease-in-out;
+      }
+
+      .toggle-button:has(.hidden-checkbox:checked) {
+        transform: rotate(180deg);
+      }
+
+      .toggle-button:hover {
+        background: #d1d5db;
+      }
+
+      body:has(.hidden-checkbox:checked) .toggle-button {
+        background: #374151;
+      }
+
+      body:has(.hidden-checkbox:checked) .toggle-button:hover {
+        background: #4b5563;
+      }
+
+      .icon-wrapper {
+        position: relative;
+        width: 24px;
+        height: 24px;
+      }
+
+      .icon {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        stroke: currentColor;
+        transition: opacity 0.3s ease-in-out, transform 0.5s ease-in-out;
+      }
+
+      .moon {
+        opacity: 0;
+        transform: rotate(-180deg);
+      }
+
+      .hidden-checkbox:checked + .toggle-button .sun {
+        opacity: 0;
+        transform: rotate(180deg);
+      }
+
+      .hidden-checkbox:checked + .toggle-button .moon {
+        opacity: 1;
+        transform: rotate(0deg);
+      }
+
+/* end dark mode (toggle)button */
+
+
+
 .popup-container {
   position: fixed;
   top: 0;
@@ -653,7 +807,7 @@ h6 {
 --------------------------------------------------------------*/
 .header {
   color: var(--default-color);
-  background-color: var(--background-color);
+  /* background-color: var(--background-color); */
   padding: 15px 0;
   transition: all 0.5s;
   z-index: 997;

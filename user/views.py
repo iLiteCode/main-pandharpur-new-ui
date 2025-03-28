@@ -646,8 +646,12 @@ def maintainer_signin(request):
                     messages.error(request, "Your account is not yet verified. Please check your email.")
                     return redirect('user:maintainer_signin')
                 login(request, user)
-                messages.success(request, "Successfully logged in!")
-                return redirect('some_dashboard')  # Replace with your target URL
+                ist = pytz.timezone('Asia/Kolkata')
+                signin_time = timezone.now().astimezone(ist).strftime('%Y-%m-%d %H:%M:%S')
+
+                messages.success(request, f'Welcome {username}, your Website Maintainer login was successful at {signin_time}')
+
+                return redirect('myapp:home')
             except Maintainer.DoesNotExist:
                 messages.error(request, "No maintainer profile found for this user.")
                 return redirect('user:maintainer_signin')

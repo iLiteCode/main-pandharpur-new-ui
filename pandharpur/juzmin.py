@@ -2,11 +2,11 @@ JAZZMIN_SETTINGS = {
     "site_title": "Pandharpur Admin",
     "site_header": "Pandharpur",
     "site_brand": "Pandharpur Management",
-    "site_logo": "favicon/logo.png",  # Fixed path issue
+    "site_logo": "assets/img/favicon.png",  
     "site_logo_classes": "img-circle",
-    "custom_css": "css/custom_admin.css",  # Custom CSS for animations & responsiveness
-    "custom_js": "js/custom_admin.js",  # Optional: Add JS for animations if needed
-    "site_icon": "favicon/favicon.ico",  # Add favicon if available
+    "custom_css": "css/custom_admin.css",  
+    "custom_js": "js/custom_admin.js",  
+    "site_icon": "assets/img/favicon.png",  # Add favicon
     "welcome_sign": "Welcome to the Pandharpur Management",
     "copyright": "Pandharpur Management",
     "search_model": "auth.User",
@@ -15,7 +15,9 @@ JAZZMIN_SETTINGS = {
     # Top Navigation Menu
     "topmenu_links": [
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "Support", "url": "", "new_window": True},
+        {"name": "Support", "url": "https://www.ilitecode.com/", "new_window": True},
+        {"name": "Developer", "url": "https://mipashyayalmar.github.io/-Profile-data/", "new_window": True},
+        {"name": "Site", "url": "/", "new_window": True},
         {"model": "auth.User"},
         {"app": "books"},
     ],

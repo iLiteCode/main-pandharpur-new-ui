@@ -313,6 +313,7 @@ button:hover {
   form {
     width: 100%;
     padding-top: 42px;
+    padding-left: 40px;
   }
   .wrapper {
     background: none;
@@ -354,7 +355,7 @@ padding-left: 90px;
 @media (min-width: 810px) {
   
   form {
-    padding-top: 42px;
+    padding-top: 95px;
 }
 }
 

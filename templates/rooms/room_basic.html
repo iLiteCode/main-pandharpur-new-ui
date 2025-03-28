@@ -11,7 +11,7 @@
 </style>
 <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
-        <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto">
+        <a href="{% url 'myapp:home' %}" class="logo d-flex align-items-center me-auto">
             <h1 class="sitename">
                 <img src="{% static 'assets/img/logo.png' %}" alt=""> PandharpurGuide
             </h1>
@@ -29,7 +29,7 @@
   
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a href="{% url 'home' %}#hero">Home</a></li>
+                <li><a href="{% url 'myapp:home' %}#hero">Home</a></li>
   
   
                 <li><a href="{%url 'homepage' %}" class="active"> Rooms</a></li>

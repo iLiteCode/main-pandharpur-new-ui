@@ -1,4 +1,47 @@
- // Unified JavaScript
+
+//dark mode toggle buttonJavaScript
+
+  // JavaScript to handle theme persistence
+  document.addEventListener('DOMContentLoaded', () => {
+    const checkbox = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Check if there's a saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      checkbox.checked = true;
+      body.classList.remove('light');
+      body.classList.add('dark');
+    } else {
+      body.classList.remove('dark');
+      body.classList.add('light');
+    }
+
+    // Toggle theme on checkbox change
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  });
+
+
+
+//dark mode toggle buttonJavaScript
+
+
+
+
+
+
+
+// Unified JavaScript
  function cancelAd(adId) {
     const adElement = document.getElementById(adId);
     if (adElement) {

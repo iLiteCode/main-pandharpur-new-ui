@@ -6,12 +6,10 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    background-color: #f5f5f5;
-}
+
 
 .header {
-    background-color: white;
+    /* background-color: white; */
     padding: 15px 0;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -54,7 +52,7 @@ body {
 .stat-card {
     flex: 1;
     min-width: 200px;
-    background: white;
+    /* background: white; */
     border-radius: 8px;
     padding: 20px;
     display: flex;
@@ -133,7 +131,7 @@ body {
 
 .sidebar {
     width: 280px;
-    background: white;
+    /* background: white; */
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -382,7 +380,7 @@ display: block;
 
         /* Card styling for detail sections */
         .detail-card {
-        background-color: white;
+        /* background-color: white; */
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         overflow: hidden;
