@@ -17,7 +17,8 @@ import random
 import logging
 from django.utils import timezone
 import pytz
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -418,8 +419,9 @@ def generate_staff_id():
         staff_id = f"HSTF{random.randint(100, 999)}"
         if not HotelStaff.objects.filter(staff_id=staff_id).exists():
             return staff_id
+        
 
-# User Profile View
+@login_required(login_url='/')
 def user_profile(request):
     if not request.user.is_authenticated:
         messages.error(request, "Please sign in to view your profile.")
@@ -433,6 +435,7 @@ def user_profile(request):
     return render(request, 'user_login/user_profile.html', {'user': user})
 
 # User Profile Edit
+@login_required(login_url='/')
 def user_profile_edit(request):
     if not request.user.is_authenticated:
         messages.error(request, "Please sign in to edit your profile.")
@@ -460,6 +463,7 @@ def user_profile_edit(request):
     return render(request, 'user_login/user_profile_edit.html', {'user': user})
 
 # Staff Profile View
+@login_required(login_url='/')
 def staff_profile(request):
     if not request.user.is_authenticated:
         messages.error(request, "Please sign in to view your staff profile.")
@@ -469,20 +473,27 @@ def staff_profile(request):
         messages.error(request, "Only staff can access this page.")
         return redirect('user:signin')
     
-    
     try:
         staff = request.user.hotel_staff_profile
     except HotelStaff.DoesNotExist:
         staff = HotelStaff.objects.create(
             user=request.user,
             staff_id=generate_staff_id(),
-            department='reception'
+            department='reception',
+            hotel_name=request.user.username + "'s Hotel",  # Set default hotel name
+            location='pandharpur',  # Default location
+            state='maharashtra',   # Default state
+            country='india'        # Default country
         )
         messages.warning(request, "Staff profile was missing and has been created with default values.")
     
-    return render(request, 'staff_login/staff_profile.html', {'staff': staff, 'user': request.user})
+    return render(request, 'staff_login/staff_profile.html', {
+        'staff': staff,
+        'user': request.user,
+        'departments': [choice[1] for choice in HotelStaff._meta.get_field('department').choices]
+    })
 
-# Staff Profile Edit
+@login_required(login_url='/')
 def staff_profile_edit(request):
     if not request.user.is_authenticated:
         messages.error(request, "Please sign in to edit your staff profile.")
@@ -492,10 +503,9 @@ def staff_profile_edit(request):
         messages.error(request, "Only staff can access this page.")
         return redirect('user:signin')
     
-    
     if not request.user.is_verified:
-         messages.warning(request, "Your staff account is not verified. please contact pandharpurguide team .")
-         return render(request, 'staff_login/staff_profile_edit.html')
+        messages.warning(request, "Your staff account is not verified. Please contact pandharpurguide team.")
+        return redirect('user:staff_profile')
     
     try:
         staff = request.user.hotel_staff_profile
@@ -503,39 +513,49 @@ def staff_profile_edit(request):
         staff = HotelStaff.objects.create(
             user=request.user,
             staff_id=generate_staff_id(),
-            department='reception'
+            department='reception',
+            hotel_name=request.user.username + "'s Hotel",
+            location='pandharpur',
+            state='maharashtra',
+            country='india'
         )
         messages.warning(request, "Staff profile was missing and has been created with default values.")
     
     if request.method == 'POST':
         user = request.user
-        user.name = request.POST.get('name', user.name)
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
         user.phone = request.POST.get('phone', user.phone)
         user.email = request.POST.get('email', user.email)
+        
         staff.department = request.POST.get('department', staff.department)
+        staff.userf_name = request.POST.get('userf_name', staff.userf_name)
         staff.hotel_gst_no = request.POST.get('hotel_gst_no', staff.hotel_gst_no)
         staff.alternate_mobile_no = request.POST.get('alternate_mobile_no', staff.alternate_mobile_no)
         staff.landline_no = request.POST.get('landline_no', staff.landline_no)
-        if 'shop_main_image' in request.FILES:
-            staff.shop_main_image = request.FILES['shop_main_image']
-        if 'shop_license_image' in request.FILES:
-            staff.shop_license_image = request.FILES['shop_license_image']
-        if 'shop_aadhar_image' in request.FILES:
-            staff.shop_aadhar_image = request.FILES['shop_aadhar_image']
-        if 'owner_pan_image' in request.FILES:
-            staff.owner_pan_image = request.FILES['owner_pan_image']
-        if 'owner_aadhar_image' in request.FILES:
-            staff.owner_aadhar_image = request.FILES['owner_aadhar_image']
-        # Explicitly preserve is_active_staff and is_verified
+        
+        # Hotel information fields
+        staff.hotel_name = request.POST.get('hotel_name', staff.hotel_name)
+        staff.location = request.POST.get('location', staff.location)
+        staff.state = request.POST.get('state', staff.state)
+        staff.country = request.POST.get('country', staff.country)
+        
+        # Handle file uploads
+        for field in ['shop_main_image', 'shop_license_image', 'shop_aadhar_image', 
+                     'owner_pan_image', 'owner_aadhar_image']:
+            if field in request.FILES:
+                setattr(staff, field, request.FILES[field])
+        
         user.save()
         staff.save()
         messages.success(request, "Staff profile updated successfully.")
         return redirect('user:staff_profile')
     
-    return render(request, 'staff_login/staff_profile_edit.html', {'staff': staff, 'user': request.user})
-
-
-
+    return render(request, 'staff_login/staff_profile_edit.html', {
+        'staff': staff,
+        'user': request.user,
+        'department_choices': HotelStaff._meta.get_field('department').choices
+    })
 
 
 logger = logging.getLogger(__name__)
@@ -667,6 +687,7 @@ def maintainer_logout(request):
         messages.success(request, "Logged out successfully.")
     return redirect('user:maintainer_signin')
 
+@login_required(login_url='/')
 def maintainer_profile(request):
     if not request.user.is_authenticated:
         messages.error(request, "Please sign in to view your maintainer profile.")
@@ -690,6 +711,7 @@ def maintainer_profile(request):
     
     return render(request, 'maintainer_login/maintainer_profile.html', {'maintainer': maintainer, 'user': request.user})
 
+@login_required(login_url='/')
 def maintainer_profile_edit(request):
     if not request.user.is_authenticated:
         messages.error(request, "Please sign in to edit your maintainer profile.")

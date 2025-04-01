@@ -17,7 +17,7 @@
             </h1>
         </a>
   
-         <!-- Messages -->
+         {% comment %} <!-- Messages -->
          {% for message in messages %}
          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
              {{ message }}
@@ -25,7 +25,7 @@
                  <span aria-hidden="true">×</span>
              </button>
          </div>
-         {% endfor %}
+         {% endfor %} {% endcomment %}
   
         <nav id="navmenu" class="navmenu">
             <ul>
@@ -35,9 +35,19 @@
                 <li><a href="{%url 'homepage' %}" class="active"> Rooms</a></li>
 
                 <!-- Staff and User Options -->
-                {% if user.is_staff %}
+                {% if user.maintainer_profile %}
                 <li class="dropdown">
-                    <a href="#"><span>Review</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <a href="#"><span>Maintainer checik</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <ul>
+                        <li><a href="{% url 'staffpanel' %}">maintainer</a></li>
+                        <li><a href="{% url 'allbookings' %}">maintainer Bookings</a></li>
+                    </ul>
+                </li>
+  
+                
+                {% elif user.is_staff %}
+                <li class="dropdown">
+                    <a href="#"><span>Staff Check</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="{% url 'staffpanel' %}">Dashboard</a></li>
                         <li><a href="{% url 'allbookings' %}"> My Bookings</a></li>
@@ -45,6 +55,8 @@
                 </li>
   
                 {% endif %}
+
+               
   
                 {% if not user.is_staff and user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}"> My Bookings</a></li>
@@ -67,7 +79,7 @@
                         <li><a data-toggle="modal" data-target="#forlogin"><i class="fas fa-bullhorn"></i> Hello, {{ request.user }}</a></li>
                         <li><a href=""><i class="fas fa-bullhorn"></i> Logout</a></li>
                         {% else %}
-                        <li><a href=""><i class="fas fa-bullhorn"></i> User Login</a></li>
+                        <li><a href="{% url 'user:signin' %}">User Login<i class="fas fa-user-circle"></i></a></li>
                         {% endif %}
                     </ul>
                 </li>

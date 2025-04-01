@@ -8986,10 +8986,14 @@
     transition: transform 0.3s ease-in-out, opacity 0.3s;
   }
   
+
+  .login-logo img {
+    width: 100px;
+}
+
   img {
     vertical-align: middle;
     border-style: none;
-    width: 100px;
   }
   
   .img-circle:hover {
@@ -8999,6 +9003,7 @@
   
   /* Login Box */
   .login-box {
+    border:1px solid black;
     text-align: center;
     animation: fadeIn 1s ease-in-out;
     padding: 20px;

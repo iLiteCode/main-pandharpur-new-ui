@@ -26,6 +26,13 @@ class HotelStaff(models.Model):
     hotel_gst_no = models.CharField(max_length=15, null=True, blank=True)
     alternate_mobile_no = models.CharField(max_length=20, null=True, blank=True)
     landline_no = models.CharField(max_length=15, null=True, blank=True)
+    userf_name = models.CharField(max_length=30,default="krishna")
+
+    hotel_name = models.CharField(max_length=30,default="krishna")
+    location = models.CharField(max_length=50,default='pandharpur')
+    state = models.CharField(max_length=50,default="maharashtra")
+    country = models.CharField(max_length=50,default="india")
+
     shop_main_image = models.ImageField(upload_to='shop_main/', null=True, blank=True)
     shop_license_image = models.ImageField(upload_to='shop_licenses/', null=True, blank=True)
     shop_aadhar_image = models.ImageField(upload_to='shop_aadhar/', null=True, blank=True)

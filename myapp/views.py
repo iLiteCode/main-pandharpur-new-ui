@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from .models import Image, Advertisement, Comment
 from .forms import ImageForm, AdvertisementForm
+from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render
+from .models import Image 
 
 
 # Home view (blog list)
 def home(request):
-    images = Image.objects.all()
+    images = Image.objects.all().order_by('-created_at')
     advertisements = Advertisement.objects.filter(status='enable').order_by('order')
     form = ImageForm()
     search_query = request.GET.get('q', '')
@@ -53,13 +56,14 @@ def blog_detail(request, image_id):
                 parent=Comment.objects.get(id=parent_id) if parent_id else None
             )
             comment.save()
-            return redirect('blog_detail', image_id=image_id)
+            return redirect('myapp:blog_detail', image_id=image_id)
 
     return render(request, 'puja/blog-details.html', {
         'image': image,
         'comments': comments
     })
-# Advertisement view
+
+@login_required(login_url='/')
 def advertisement(request):
     form = AdvertisementForm()
 

@@ -12,7 +12,7 @@
             <h1 class="mb-2 mb-lg-0">Blog Details</h1>
             <nav class="breadcrumbs">
                 <ol>
-                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'myapp:home' %}">Home</a></li>
                     <li class="current">Blog Details</li>
                 </ol>
             </nav>
@@ -140,7 +140,7 @@
                 <div class="widgets-container">
                     <div class="search-widget widget-item">
                         <h3 class="widget-title">Search</h3>
-                        <form action="{% url 'home' %}" method="get">
+                        <form action="{% url 'myapp:home' %}" method="get">
                             <input type="text" name="q" placeholder="Search...">
                             <button type="submit" title="Search"><i class="bi bi-search"></i></button>
                         </form>

@@ -5,455 +5,589 @@
 {% block content %}
 
 
-<style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Booking</title>
+  <style>
+    :root {
+      --primary-color: #4a6fa0;
+      --primary-hover: #3a5980;
+      --accent-color: #f8ac59;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+      --light-text: #fff;
+      --border-radius: 8px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--dark-text);
+      background-color: #f5f7f9;
+    }
+    
+    .search-section {
+      background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+      padding: 2rem 0;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .search-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .search-container h3 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--dark-text);
+    }
+    
+    .form-control, .form-select {
+      border-radius: var(--border-radius);
+      padding: 0.75rem;
+      border: 1px solid #e0e0e0;
+      box-shadow: none;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(74, 111, 160, 0.25);
+    }
+    
+    .btn-search {
+      background-color: var(--accent-color);
+      border: none;
+      color: var(--dark-text);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    .btn-search:hover {
+      background-color: #e69c4a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .filter-box {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 1rem;
+    }
+    
+    .filter-box h5 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-weight: 600;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .amenity-group {
+      margin-bottom: 0.75rem;
+    }
+    
+    .form-check-label {
+      cursor: pointer;
+      padding-left: 0.5rem;
+    }
+    
+    .room-card {
+      margin-bottom: 1.5rem;
+    }
+    
+    .card {
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: none;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .card-title {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .room-heading {
+      color: #8a56ac;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .location {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .location i {
+      color: var(--primary-color);
+    }
+    
+    .details-row {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      padding: 0.75rem;
+    }
+    
+    .btn-book {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0.6rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .btn-book:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+    
+    .modal-content {
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 1.2rem;
+      line-height: 1;
+      z-index: 10;
+    }
+    
+    .availability-notice {
+      background-color: #d4edda;
+      color: #155724;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .search-container {
+        padding: 1rem;
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      .filter-box {
+        position: relative;
+        margin-bottom: 1rem;
+      }
+      
+      .details-row {
+        font-size: 0.85rem;
+      }
+    }
+    
+    /* Checkbox custom styling */
+    .form-check-input {
+      width: 1.1em;
+      height: 1.1em;
+      margin-top: 0.2em;
+      cursor: pointer;
+    }
+    
+    .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    /* Image hover effect */
+    .img-container {
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .card-img-top {
+      transition: transform 0.5s;
+    }
+    
+    .img-container:hover .card-img-top {
+      transform: scale(1.05);
+    }
+    
+    .img-container::after {
+      content: 'Click to enlarge';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0,0,0,0.6);
+      color: white;
+      text-align: center;
+      padding: 5px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .img-container:hover::after {
+      opacity: 1;
+    }
+  </style>
 
-            }
-
-            a {
-                text-decoration: none;
-            }
-
-            a:hover {
-                text-decoration: none;
-            }
-
-
-
-
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-
-            @keyframes zoomIn {
-                from { transform: scale(0.95); opacity: 0; }
-                to { transform: scale(1); opacity: 1; }
-            }
-
-            .content {
-                text-align: center;
-                padding: 20px;
-            }
-            .content img {
-                width: 100%;
-                max-width: 1000px;
-                height: auto;
-            }
-            .arrow {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 30px;
-                color: orange;
-                cursor: pointer;
-            }
-            .arrow.left {
-                left: 10px;
-            }
-            .arrow.right {
-                right: 10px;
-            }
-
-            .header1 {
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                padding: 7px 78px 0px 0px;
-                background-color: white;
-            }
-            .header1 a {
-                text-decoration: none;
-                color: #ff6600;
-                font-size: 16px;
-                margin-right: 20px;
-                display: flex;
-                align-items: center;
-            }
-            .header1 a i {
-                margin-left: 5px;
-            }
-            .header1 .button {
-                background-color: #ff6600;
-                color: white;
-                border: none;
-                padding: 5px 15px;
-                margin-right: 10px;
-                border-radius: 5px;
-                font-size: 16px;
-                cursor: pointer;
-            }
-            </style>
-
-            <style>
-            /* Import Font Awesome from CDN */
-            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
-            /* Navbar Styles */
-            .nav {
-                background-color: #ffffff;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                padding: 1rem;
-                position: relative;
-            }
-
-            .nav-brand {
-                display: flex;
-                align-items: center;
-            }
-
-            .nav-logo {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-            }
-
-            .brand-name {
-                font-size: 1.25rem;
-                font-weight: bold;
-                color: #333;
-            }
-
-            /* Hamburger Button Styles */
-            .nav-toggle {
-                position: absolute;
-                right: 1rem;
-                top: 1.5rem;
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 0.5rem;
-                z-index: 100;
-            }
-
-            .hamburger {
-                display: block;
-                position: relative;
-                width: 24px;
-                height: 2px;
-                background: #333;
-                transition: all 0.3s ease-in-out;
-            }
-
-            .hamburger::before,
-            .hamburger::after {
-                content: '';
-                position: absolute;
-                width: 24px;
-                height: 2px;
-                background: #333;
-                transition: all 0.3s ease-in-out;
-            }
-
-            .hamburger::before {
-                transform: translateY(-8px);
-            }
-
-            .hamburger::after {
-                transform: translateY(8px);
-            }
-
-            /* Animated hamburger when active */
-            .nav-toggle.active .hamburger {
-                background: transparent;
-            }
-
-            .nav-toggle.active .hamburger::before {
-                transform: rotate(45deg);
-            }
-
-            .nav-toggle.active .hamburger::after {
-                transform: rotate(-45deg);
-            }
-
-            /* Navigation Links */
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                gap: 0.5rem;
-                padding-top: 1rem;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            /* Dropdown Styles */
-            .dropdown {
-                position: relative;
-            }
-
-            .dropbtn {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                width: 100%;
-                padding: 0.75rem 1rem;
-                background: none;
-                border: none;
-                cursor: pointer;
-                color: #333;
-                font-size: 1rem;
-                transition: all 0.3s ease;
-            }
-
-            .dropbtn:hover {
-                background-color: #f5f5f5;
-            }
-
-            .toggle-icon {
-                margin-left: auto;
-                transition: transform 0.3s ease;
-            }
-
-            .dropdown.active .toggle-icon {
-                transform: rotate(45deg);
-            }
-
-            .dropdown-content {
-                display: none;
-                background-color: #fff;
-                min-width: 200px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-
-            .dropdown.active .dropdown-content {
-                display: block;
-            }
-
-            .dropdown-content a {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.75rem 1rem;
-                color: #333;
-                text-decoration: none;
-                transition: all 0.2s ease;
-            }
-
-            .dropdown-content a:hover {
-                background-color: #f5f5f5;
-            }
-
-            /* Responsive Styles */
-            @media (min-width: 768px) {
-                .nav {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0.5rem 2rem;
-                }
-
-                .nav-toggle {
-                    display: none;
-                }
-
-                .nav-links {
-                    display: flex !important;
-                    flex-direction: row;
-                    padding-top: 0;
-                    gap: 1rem;
-                }
-
-                .dropdown-content {
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    z-index: 1000;
-                }
-            }
-</style>
+</head>
 <body>
 
-<section>
-<div class="container-fluid py-5 px-5">
-<form action="" method="POST">
- {% csrf_token %}
- <div class="row justify-content-center py-5 ">
-  <div class="col-lg-4">
-   <label for="">
-    Location
-   </label>
-   <select class="form-control" id="roomstatus" name="search_location">
-    <option>
-     Location
-    </option>
-    {% for each_location, each_hotel_id in all_location %}
-    <option value="{{each_hotel_id}}">
-     {{each_location}}
-    </option>
-    {% endfor %}
-   </select>
+<!-- Search Section -->
+<!-- Search Section -->
+<section class="search-section">
+  <div class="container py-2">
+    <div class="search-container">
+      <h3 class="text-center mb-4">Find Your Perfect Stay</h3>
+      <form action="" method="POST">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label" for="location">Location</label>
+            <select class="form-select" id="location" name="search_location">
+              <option selected disabled>Select location</option>
+              {% for each_location, each_hotel_id in all_location %}
+              <option value="{{each_hotel_id}}">{{each_location}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="col-md-3">
+            <label class="form-label" for="check-in">Check In</label>
+            <input class="form-control date-input" id="check-in" min="{% now 'Y-m-d' %}" name="cin" placeholder="Check in date" required type="date" onchange="updateCheckoutMinDate()">
+          </div>
+          
+          <div class="col-md-3">
+            <label class="form-label" for="check-out">Check Out</label>
+            <input class="form-control date-input" id="check-out" name="cout" placeholder="Check out date" required type="date">
+          </div>
+          
+          <div class="col-md-2">
+            <label class="form-label" for="capacity">Guests</label>
+            <input class="form-control" id="capacity" min="1" name="capacity" placeholder="Number of guests" required type="number">
+          </div>
+          
+          <div class="col-12 mt-4">
+            <button class="btn-search" type="submit">Search Availability</button>
+          </div>
+        </div>
+      </form>
+      <div class="popup-container" id="popupContainer">
+      {% if rooms %}
+      <div class="popup rooms-available" role="alert">
+        <button class="cancel-btn" aria-label="Cancel">×</button>
+        <div class="popup-content">
+          <div class="check-circle">
+            <i class="fas fa-check"></i>
+          </div>
+          <p>Rooms Available for your selected dates!</p>
+          <div class="popup-buttons">
+            <button class="btn close-btn">Continue</button>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    </div>
   </div>
-
-  <div class="col-lg-2">
-    <label for="">Check in</label>
-    <input class="form-control mr-sm-2" type="date" placeholder="Check in" name="cin" min={%todays_date%} aria-label="Search" required="True">
-</div>
-<div class="col-lg-2">
-    <label for="">Check Out</label>
-    <input class="form-control mr-sm-2" type="date" placeholder="Check out" name="cout" min={%tommorow%}  aria-label="Search" required="True">
-</div>
-  <div class="col-lg-2">
-   <label for="">
-    Person
-   </label>
-   <input aria-label="Search" class="form-control mr-sm-2" name="capacity" placeholder="Person" required="True" type="number"/>
-  </div>
-  <div class="col-lg-2">
-   <input class="form-control mr-sm-2 btn btn-primary my-4" style="position: relative; top: 7px;" type="submit" value="Check Availabilty"/>
-  </div>
-  {% if rooms %}
-  <p class="text-center text-success">
-   Rooms Available
-  </p>
-  {% endif %}
- </div>
-</form>
-</div>
 </section>
-<div class="container">
-<div class="row">
-<div class="col-12 col-md-4 col-lg-2">
- <div class="filter-box">
-  <h5>
-   Filter Rooms
-  </h5>
-  <div class="amenities-filter">
-   <input class="amenity-filter" data-amenity="ac" id="ac" type="checkbox"/>
-   <label for="ac">
-    AC
-   </label>
-   <br/>
-   <input class="amenity-filter" data-amenity="fan" id="fan" type="checkbox"/>
-   <label for="fan">
-    Fan
-   </label>
-   <br/>
-   <input class="amenity-filter" data-amenity="wifi" id="wifi" type="checkbox"/>
-   <label for="wifi">
-    Wi-Fi
-   </label>
-   <br/>
-   <input class="amenity-filter" data-amenity="parking" id="parking" type="checkbox"/>
-   <label for="parking">
-    Parking
-   </label>
-   <br/>
-   <input class="amenity-filter" data-amenity="heater" id="heater" type="checkbox"/>
-   <label for="heater">
-    Heater
-   </label>
-   <br/>
-   <input class="amenity-filter" data-amenity="food_facility" id="food_facility" type="checkbox"/>
-   <label for="food_facility">
-    Food Facility
-   </label>
-   <br/>
-  </div>
- </div>
-</div>
-<div class="col-12 col-md-8 col-lg-9">
- <div class="row" id="room-list">
-  {% for each_room in rooms %}
-                    {% if each_room.get_status_display == 'available' %}
-  <div class="col-12 col-md-6 col-lg-4 room-card" data-ac="{{ each_room.ac }}" data-fan="{{ each_room.fan }}" data-food_facility="{{ each_room.food_facility }}" data-heater="{{ each_room.heater }}" data-parking="{{ each_room.parking }}" data-room-id="{{ each_room.id }}" data-wifi="{{ each_room.wifi }}">
-   <div class="card h-100">
-    <div class="carousel slide" data-bs-ride="carousel" id="carousel{{ each_room.id }}">
-     <div class="carousel-inner">
-      <div class="carousel-item active">
-       {% if each_room.image1 %}
-       <img alt="Room Image 1" class="img-fluid gallery-img" onclick="openModal(this)" src="{{ each_room.image1.url }}"/>
-       {% else %}
-       <img alt="Placeholder image of a room with a bed and a window" class="img-fluid gallery-img" height="400" src="https://storage.googleapis.com/a1aa/image/XxpfEpNg3HwQD6R0z5W1h4ibliSpdZLILNu8iUNIrXIZelIUA.jpg" width="600"/>
-       {% endif %}
+
+<style>
+  .date-input {
+    position: relative;
+  }
+  .date-input::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+  }
+  .date-input:before {
+    content: attr(placeholder);
+    position: absolute;
+    color: #6c757d;
+    pointer-events: none;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .date-input:focus:before,
+  .date-input:not([value=""]):before {
+    display: none;
+  }
+</style>
+
+<script>
+  // Set initial min date for checkout (tomorrow)
+  document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const checkOutInput = document.getElementById('check-out');
+    checkOutInput.min = formatDate(tomorrow);
+    
+    // Clear any existing dates when page loads
+    document.getElementById('check-in').value = '';
+    document.getElementById('check-out').value = '';
+  });
+
+  function updateCheckoutMinDate() {
+    const checkInInput = document.getElementById('check-in');
+    const checkOutInput = document.getElementById('check-out');
+    
+    if (checkInInput.value) {
+      const checkInDate = new Date(checkInInput.value);
+      const minCheckOutDate = new Date(checkInDate);
+      minCheckOutDate.setDate(minCheckOutDate.getDate() + 1);
+      
+      checkOutInput.min = formatDate(minCheckOutDate);
+      
+      // If current checkout date is before new min date, clear it
+      if (checkOutInput.value && new Date(checkOutInput.value) < minCheckOutDate) {
+        checkOutInput.value = '';
+      }
+    }
+  }
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+</script>
+
+<!-- Results Section -->
+<div class="container py-4">
+  <div class="row">
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3 col-md-4 mb-4">
+      <div class="filter-box">
+        <h5><i class="fas fa-filter me-2"></i>Filter Rooms</h5>
+        <div class="amenities-filter">
+          <div class="form-check amenity-group">
+            <input class="form-check-input amenity-filter" data-amenity="ac" id="ac" type="checkbox">
+            <label class="form-check-label" for="ac">
+              <i class="fas fa-snowflake me-2 text-primary"></i>Air Conditioning
+            </label>
+          </div>
+          
+          <div class="form-check amenity-group">
+            <input class="form-check-input amenity-filter" data-amenity="fan" id="fan" type="checkbox">
+            <label class="form-check-label" for="fan">
+              <i class="fas fa-wind me-2 text-primary"></i>Fan
+            </label>
+          </div>
+          
+          <div class="form-check amenity-group">
+            <input class="form-check-input amenity-filter" data-amenity="wifi" id="wifi" type="checkbox">
+            <label class="form-check-label" for="wifi">
+              <i class="fas fa-wifi me-2 text-primary"></i>Wi-Fi
+            </label>
+          </div>
+          
+          <div class="form-check amenity-group">
+            <input class="form-check-input amenity-filter" data-amenity="parking" id="parking" type="checkbox">
+            <label class="form-check-label" for="parking">
+              <i class="fas fa-parking me-2 text-primary"></i>Parking
+            </label>
+          </div>
+          
+          <div class="form-check amenity-group">
+            <input class="form-check-input amenity-filter" data-amenity="heater" id="heater" type="checkbox">
+            <label class="form-check-label" for="heater">
+              <i class="fas fa-fire me-2 text-primary"></i>Heater
+            </label>
+          </div>
+          
+          <div class="form-check amenity-group">
+            <input class="form-check-input amenity-filter" data-amenity="food_facility" id="food_facility" type="checkbox">
+            <label class="form-check-label" for="food_facility">
+              <i class="fas fa-utensils me-2 text-primary"></i>Food Facility
+            </label>
+          </div>
+        </div>
       </div>
-     </div>
     </div>
-    <div class="card-body">
-     <h5 class="card-title">
-      {{ each_room.hotel.name }} - Room {{ each_room.room_number }}
-     </h5>
-     <center>
-      <p class="card-text" style="color:Violet;">
-       {{ each_room.heading }}
-      </p>
-     </center>
-     <p class="card-text">
-      {{ each_room.description }}
-     </p>
-     <div class="location mb-2">
-      <i class="fas fa-map-marker-alt me-2">
-      </i>
-      {{ each_room.hotel.location }}
-     </div>
-     <div class="row details-row">
-      <div class="col-6">
-       <p>
-        <strong>
-         Check-In:
-        </strong>
-        {{ each_room.check_in_time|default_if_none:"N/A" }}
-        <br/>
-        <strong>
-         Food Facility:
-        </strong>
-        {{ each_room.food_facility|yesno:"Yes,No" }}
-       </p>
+    
+    <!-- Room Results -->
+    <div class="col-lg-9 col-md-8">
+      <div class="row" id="room-list">
+        {% for each_room in rooms %}
+        {% if each_room.get_status_display == 'available' %}
+        <div class="col-lg-6 col-xl-4 room-card" 
+             data-ac="{{ each_room.ac }}" 
+             data-fan="{{ each_room.fan }}" 
+             data-food_facility="{{ each_room.food_facility }}" 
+             data-heater="{{ each_room.heater }}" 
+             data-parking="{{ each_room.parking }}" 
+             data-room-id="{{ each_room.id }}" 
+             data-wifi="{{ each_room.wifi }}">
+          <div class="card h-100">
+            <!-- Room Image -->
+            <div class="img-container">
+              {% if each_room.hotel.image1 %}
+              <img alt="Room Image" class="card-img-top gallery-img" onclick="openModal(this)" src="{{ each_room.image1.url }}">
+              {% else %}
+              <img alt="Room placeholder" class="card-img-top gallery-img" onclick="openModal(this)" src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg">
+              {% endif %}
+            </div>
+            
+            <div class="card-body">
+              <h5 class="card-title">{{ each_room.hotel.name|upper }} - Room {{ each_room.room_number|lower }}</h5>
+              <p class="room-heading text-center mb-3">{{ each_room.heading|title }}</p>
+              
+              <div class="location mb-3">
+                <i class="fas fa-map-marker-alt me-2"></i>{{ each_room.hotel.location }}
+              </div>
+              
+              <p class="card-text">{{ each_room.description }}</p>
+              
+              <div class="details-row">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="mb-1"><i class="far fa-clock me-2"></i><strong>Check-In:</strong></p>
+                    <p class="ms-4">{{ each_room.check_in_time|default_if_none:"N/A" }}</p>
+                  </div>
+                  <div class="col-6">
+                    <p class="mb-1"><i class="far fa-clock me-2"></i><strong>Check-Out:</strong></p>
+                    <p class="ms-4">{{ each_room.check_out_time|default_if_none:"N/A" }}</p>
+                  </div>
+                </div>
+                
+                <div class="row mt-2">
+                  <div class="col-6">
+                    <p class="mb-0"><i class="fas fa-utensils me-2"></i><strong>Food:</strong></p>
+                    <p class="ms-4">{{ each_room.food_facility|yesno:"Available,Not Available" }}</p>
+                  </div>
+                  <div class="col-6">
+                    <p class="mb-0"><i class="fas fa-parking me-2"></i><strong>Parking:</strong></p>
+                    <p class="ms-4">{{ each_room.parking|yesno:"Available,Not Available" }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-footer bg-white border-0 text-end pb-3">
+              <a href="{% url 'bookroompage' %}?roomid={{ each_room.id }}">
+                <button class="btn-book">
+                  <i class="fas fa-bookmark me-2"></i>Book Now
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
       </div>
-      <div class="col-6">
-       <p>
-        <strong>
-         Check-Out:
-        </strong>
-        {{ each_room.check_out_time|default_if_none:"N/A" }}
-        <br/>
-        <strong>
-         Parking:
-        </strong>
-        {{ each_room.parking|yesno:"Yes,No" }}
-       </p>
-      </div>
-     </div>
-     <div class="select-room text-end mt-3">
-        <a href="{% url 'bookroompage' %}?roomid={{ each_room.id }}">
-       <button class="button-57" role="button">
-        <span class="text">
-         Book Now
-        </span>
-        <span>
-        </span>
-       </button>
-      </a>
-     </div>
     </div>
-   </div>
   </div>
-  {% endif %}
-                {% endfor %}
- </div>
 </div>
-</div>
-</div>
+
+<!-- Image Modal -->
 <div aria-hidden="true" aria-labelledby="imageModalLabel" class="modal fade" id="imageModal" tabindex="-1">
-<div class="modal-dialog modal-dialog-centered modal-lg">
-<div class="modal-content">
- <button aria-label="Close" class="close-button" data-bs-dismiss="modal">
-  ×
- </button>
- <img alt="Expanded View" id="modalImage" src=""/>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <button aria-label="Close" class="close-button" data-bs-dismiss="modal">×</button>
+      <img alt="Expanded View" class="img-fluid" id="modalImage" src="">
+    </div>
+  </div>
 </div>
-</div>
-</div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js">
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const amenityFilters = document.querySelectorAll('.amenity-filter');
+    const roomCards = document.querySelectorAll('.room-card');
+    
+    amenityFilters.forEach(filter => {
+      filter.addEventListener('change', updateRoomList);
+    });
+    
+    function updateRoomList() {
+      const activeFilters = Array.from(amenityFilters)
+        .filter(filter => filter.checked)
+        .map(filter => filter.dataset.amenity);
+      
+      roomCards.forEach(card => {
+        if (activeFilters.length === 0) {
+          card.style.display = 'block';
+          return;
+        }
+        
+        const shouldDisplay = activeFilters.every(filter => 
+          card.dataset[filter] === 'True' || card.dataset[filter] === 'true');
+        
+        card.style.display = shouldDisplay ? 'block' : 'none';
+      });
+    }
+    
+    // Image modal functionality
+    window.openModal = function(img) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      modalImg.src = img.src;
+      
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    };
+    
+    // Initialize Bootstrap components
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
-</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

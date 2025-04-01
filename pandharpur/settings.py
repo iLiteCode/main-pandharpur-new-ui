@@ -63,6 +63,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://75b8-2406-9e00-111e-7053-156c-4118-c86b-95c2.ngrok-free.app',
+]
+
+
 ROOT_URLCONF = 'pandharpur.urls'
 
 TEMPLATES = [

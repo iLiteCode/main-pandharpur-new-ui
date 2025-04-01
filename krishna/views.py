@@ -1,4 +1,4 @@
-from django.shortcuts import render ,redirect
+
 from django.http import HttpResponse , HttpResponseRedirect
 from .models import Hotels,Rooms,Reservation
 from django.contrib import messages
@@ -14,6 +14,11 @@ from .models import Rooms, Hotels
 from .forms import RoomForm
 
 from datetime import datetime
+from django.http import HttpResponse, Http404
+
+
+
+
 
 
 
@@ -117,7 +122,8 @@ def contactpage(request):
 
 
 #staff panel page
-@login_required(login_url='/staff')
+
+@login_required(login_url='/')
 def panel(request):
     
     if request.user.is_staff == False:
@@ -135,7 +141,7 @@ def panel(request):
     return HttpResponse(response)
 
 
-@login_required(login_url='/staff')
+@login_required(login_url='/')
 def edit_room(request):
     if not request.user.is_staff:
         return HttpResponse('Access Denied')  # Staff-only access
@@ -184,7 +190,7 @@ def edit_room(request):
             messages.error(request, "Room not found.")
             return redirect('staffpanel')  # Redirect if room does not exist
 
-@login_required(login_url='/staff')
+@login_required(login_url='/')
 def add_new_room(request):
     if not request.user.is_staff:
         return HttpResponse('Access Denied')  # Staff-only access
@@ -239,7 +245,7 @@ def add_new_room(request):
 
 
 #booking room page
-@login_required(login_url='/user')
+@login_required(login_url='/')
 def book_room_page(request):
     room = Rooms.objects.all().get(id=int(request.GET['roomid']))
     return HttpResponse(render(request,'user/bookroom.html',{'room':room}))
@@ -248,7 +254,7 @@ def book_room_page(request):
 from datetime import datetime  # import datetime class
 
 #For booking the room
-@login_required(login_url='/user')
+@login_required(login_url='/')
 def book_room(request):
     
     if request.method == "POST":
@@ -294,14 +300,9 @@ def book_room(request):
 def handler404(request):
     return render(request, '404.html', status=404)
 
-from datetime import datetime
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
-from .models import Rooms, Reservation
-from django.contrib import messages
 
-@login_required(login_url='/staff')
+
+@login_required(login_url='/')
 def view_room(request):
     # Get room ID from the GET parameter 'roomid'
     room_id = request.GET.get('roomid')
@@ -342,7 +343,7 @@ def view_room(request):
 
 
 
-@login_required(login_url='/user')
+@login_required(login_url='/')
 def user_bookings(request):
     if request.user.is_authenticated == False:
         return redirect('userloginpage')
@@ -358,9 +359,10 @@ def user_bookings(request):
 
     return render(request, 'user/mybookings.html', {'bookings': bookings, 'current_date': current_date})
 
-@login_required(login_url='/staff')
+@login_required(login_url='/')
 def add_new_location(request):
     if request.method == "POST" and request.user.is_staff:
+        name = request.POST['hotel_name']
         owner = request.POST['new_owner']
         location = request.POST['new_city']
         state = request.POST['new_state']
@@ -372,6 +374,7 @@ def add_new_location(request):
             return redirect("staffpanel")
         else:
             new_hotel = Hotels()
+            new_hotel.name = name
             new_hotel.owner = owner
             new_hotel.location = location
             new_hotel.state = state
@@ -385,7 +388,7 @@ def add_new_location(request):
     
 #for showing all bookings to staff
 
-@login_required(login_url='/staff')
+@login_required(login_url='/')
 def all_bookings(request):
 
     bookings = Reservation.objects.all()

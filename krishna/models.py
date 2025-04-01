@@ -9,7 +9,7 @@ from decimal import Decimal
 # Create your models here.
 class Hotels(models.Model):
     #h_id,h_name,owner ,location,rooms
-    name = models.CharField(max_length=30,default="krishna")
+    name = models.CharField(max_length=30,default="tiranga")
     owner = models.CharField(max_length=20)
     location = models.CharField(max_length=50)
     state = models.CharField(max_length=50,default="maharashtra")

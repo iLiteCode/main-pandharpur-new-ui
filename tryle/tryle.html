@@ -1,26 +1,545 @@
-/* Apply dark theme to body and all relevant sections */
-body:has(.hidden-checkbox:checked) {
-  background: #111827;
-  color: #f3f4f6;
-}
+{% extends 'rooms/room_basic.html' %}
+{% block title %}Staff Panel{% endblock title %}
+{% load static %}
+{% load app_tags %}
 
-body:has(.hidden-checkbox:checked) section,
-body:has(.hidden-checkbox:checked).dark-background,
-body:has(.hidden-checkbox:checked) header,
-body:has(.hidden-checkbox:checked) .header-container,
-body:has(.hidden-checkbox:checked) .navmenu ul,
-body:has(.hidden-checkbox:checked) .page-title,
-body:has(.hidden-checkbox:checked) .blog-posts article,
-body:has(.hidden-checkbox:checked) .widgets-container,
-body:has(.hidden-checkbox:checked) .card-body,
-body:has(.hidden-checkbox:checked) .progress-right,
-body:has(.hidden-checkbox:checked) .tr,
-body:has(.hidden-checkbox:checked) .progress-left ,
-body:has(.hidden-checkbox:checked) .sidebar,
-body:has(.hidden-checkbox:checked) .profile-section ,
-body:has(.hidden-checkbox:checked) .header,
-body:has(.hidden-checkbox:checked) .detail-card,
-body:has(.hidden-checkbox:checked) .booking-stats {
-  background: #111827;
-  color: #f3f4f6;
-}
+{% block css %}
+<link rel="stylesheet" href="{% static 'staff/panel.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="{% static 'bootstrap/bootstrap.css' %}">
+<style>
+    /* Custom Styles */
+    .stat-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+        border-radius: 10px;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .progress {
+        width: 150px;
+        height: 150px;
+        position: relative;
+    }
+    
+    .progress-value {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+    
+    .btn-action {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        margin: 2px;
+    }
+    
+    /* Modal Enhancements */
+    .modal-content {
+        border-radius: 15px;
+        border: none;
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+    }
+    
+    /* Feature Checkboxes */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+    
+    /* Toast Notification */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1100;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .stat-card {
+            margin-bottom: 20px;
+        }
+        
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<!-- Toast Notification Container -->
+<div class="toast-container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} text-white">
+            <strong class="me-auto">Notification</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<!-- Stats Section -->
+<section class="my-5">
+    <div class="container">
+        <h2 class="text-center text-primary mb-4">Room Statistics</h2>
+        <div class="row g-4">
+            <!-- Total Rooms -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <div class="stat-card p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 mb-0">Total Rooms</h3>
+                        <i class="fas fa-door-open fa-2x text-primary"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="mb-0">{{ total_rooms }}</h2>
+                        <div class="progress-circle" data-value="{{ total_rooms|percentage:total_rooms }}"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Available Rooms -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <div class="stat-card p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 mb-0">Available</h3>
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="mb-0">{{ available }}</h2>
+                        <div class="progress-circle" data-value="{{ available|percentage:total_rooms }}" data-color="success"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Not Available -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <div class="stat-card p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 mb-0">Not Available</h3>
+                        <i class="fas fa-times-circle fa-2x text-danger"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="mb-0">{{ unavailable }}</h2>
+                        <div class="progress-circle" data-value="{{ unavailable|percentage:total_rooms }}" data-color="danger"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Total Reservation -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <div class="stat-card p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 mb-0">Reserved</h3>
+                        <i class="fas fa-calendar-check fa-2x text-warning"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="mb-0">{{ reserved }}</h2>
+                        <div class="progress-circle" data-value="{{ reserved|percentage:total_rooms }}" data-color="warning"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rooms Table Section -->
+<section class="mb-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Rooms Details</h2>
+            <div>
+                <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#newRoomModal">
+                    <i class="fas fa-plus me-2"></i>Add Room
+                </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newLocationModal">
+                    <i class="fas fa-map-marker-alt me-2"></i>Add Location
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Room #</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Final Price</th>
+                        <th>Capacity</th>
+                        <th>Size</th>
+                        <th>Hotel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if rooms %}
+                    {% for room in rooms %}
+                    <tr>
+                        <td>{{ room.room_number }}</td>
+                        <td>{{ room.get_room_type_display }}</td>
+                        <td>
+                            <span class="badge bg-{% if room.get_status_display == 'available' %}success{% else %}danger{% endif %}">
+                                {{ room.get_status_display|title }}
+                            </span>
+                        </td>
+                        <td>₹{{ room.price|floatformat:2 }}</td>
+                        <td>{{ room.discount }}%</td>
+                        <td>₹{{ room.discounted_price|floatformat:2 }}</td>
+                        <td>{{ room.capacity }}</td>
+                        <td>{{ room.size }} sq.ft</td>
+                        <td>{{ room.hotel.name }}</td>
+                        <td class="text-nowrap">
+                            <a href="{% url 'editroomaction' %}?roomid={{ room.id }}" class="btn btn-sm btn-warning btn-action">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'viewroom' %}?roomid={{ room.id }}" class="btn btn-sm btn-info btn-action">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center py-4">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>No rooms found
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Add New Room Modal -->
+<div class="modal fade" id="newRoomModal" tabindex="-1" aria-labelledby="newRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newRoomModalLabel">Add New Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'addroom' %}" method="POST" enctype="multipart/form-data" id="roomForm">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <!-- Basic Info -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="room_number" class="form-label">Room Number</label>
+                                <input type="text" class="form-control" id="room_number" name="room_number" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="roomtype" class="form-label">Room Type</label>
+                                <select class="form-select" name="roomtype" id="roomtype" required>
+                                    <option value="1">Premium</option>
+                                    <option value="2">Deluxe</option>
+                                    <option value="3">Basic</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="capacity" class="form-label">Capacity</label>
+                                <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price (₹)</label>
+                                <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="discount" class="form-label">Discount (%)</label>
+                                <input type="number" step="0.01" class="form-control" id="discount" name="discount" min="0" max="100">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="size" class="form-label">Size (sq ft)</label>
+                                <input type="number" class="form-control" id="size" name="size" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" name="status" id="status" required>
+                                    <option value="1">Available</option>
+                                    <option value="2">Not Available</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="hotel" class="form-label">Hotel</label>
+                                <select class="form-select" name="hotel" id="hotel" required>
+                                    {% for loc, id in location %}
+                                    <option value="{{ id }}">{{ loc }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="extra_person_charges" class="form-label">Extra Person Charges (₹)</label>
+                                <input type="number" step="0.01" class="form-control" id="extra_person_charges" name="extra_person_charges">
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Info -->
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="heading" class="form-label">Heading</label>
+                                <input type="text" class="form-control" id="heading" name="heading">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="check_in_time" class="form-label">Check-In Time</label>
+                                    <input type="time" class="form-control" id="check_in_time" name="check_in_time">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="check_out_time" class="form-label">Check-Out Time</label>
+                                    <input type="time" class="form-control" id="check_out_time" name="check_out_time">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="languages_spoken" class="form-label">Languages Spoken</label>
+                                <select class="form-select" id="languages_spoken" name="languages_spoken">
+                                    <option value="marathi">Marathi</option>
+                                    <option value="english">English</option>
+                                    <option value="hindi">Hindi</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Features -->
+                        <div class="col-12">
+                            <h5 class="mb-3">Features</h5>
+                            <div class="feature-grid">
+                                <div class="feature-item">
+                                    <input type="checkbox" class="form-check-input me-2" id="wifi" name="wifi">
+                                    <label class="form-check-label" for="wifi">Wi-Fi</label>
+                                </div>
+                                <div class="feature-item">
+                                    <input type="checkbox" class="form-check-input me-2" id="ac" name="ac">
+                                    <label class="form-check-label" for="ac">Air Conditioning</label>
+                                </div>
+                                <div class="feature-item">
+                                    <input type="checkbox" class="form-check-input me-2" id="fan" name="fan">
+                                    <label class="form-check-label" for="fan">Fan</label>
+                                </div>
+                                <div class="feature-item">
+                                    <input type="checkbox" class="form-check-input me-2" id="heater" name="heater">
+                                    <label class="form-check-label" for="heater">Heater</label>
+                                </div>
+                                <div class="feature-item">
+                                    <input type="checkbox" class="form-check-input me-2" id="food_facility" name="food_facility">
+                                    <label class="form-check-label" for="food_facility">Food Facility</label>
+                                </div>
+                                <div class="feature-item">
+                                    <input type="checkbox" class="form-check-input me-2" id="parking" name="parking">
+                                    <label class="form-check-label" for="parking">Parking</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Images -->
+                        <div class="col-12">
+                            <h5 class="mb-3">Room Images</h5>
+                            <div class="row g-2">
+                                {% for i in "123456789"|make_list %}
+                                <div class="col-md-4 col-6">
+                                    <div class="mb-3">
+                                        <label for="image{{ i }}" class="form-label">Image {{ i }}</label>
+                                        <input type="file" class="form-control" id="image{{ i }}" name="image{{ i }}" accept="image/*">
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Room</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add New Location Modal -->
+<div class="modal fade" id="newLocationModal" tabindex="-1" aria-labelledby="newLocationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newLocationModalLabel">Add New Location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'addnewlocation' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="new_owner" class="form-label">Owner</label>
+                        <input type="text" class="form-control" id="new_owner" name="new_owner">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="new_city" name="new_city">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="new_state" name="new_state">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_country" class="form-label">Country</label>
+                        <input type="text" class="form-control" id="new_country" name="new_country">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Location</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Initialize tooltips
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    });
+    
+    // Progress circle animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const circles = document.querySelectorAll('.progress-circle');
+        
+        circles.forEach(circle => {
+            const value = parseFloat(circle.getAttribute('data-value')) || 0;
+            const color = circle.getAttribute('data-color') || 'primary';
+            const colors = {
+                'primary': '#6a11cb',
+                'success': '#28a745',
+                'danger': '#dc3545',
+                'warning': '#ffc107'
+            };
+            
+            // Create SVG circle
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('width', '60');
+            svg.setAttribute('height', '60');
+            svg.setAttribute('viewBox', '0 0 36 36');
+            svg.classList.add('circular-chart');
+            
+            const background = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            background.setAttribute('cx', '18');
+            background.setAttribute('cy', '18');
+            background.setAttribute('r', '16');
+            background.setAttribute('fill', 'none');
+            background.setAttribute('stroke', '#eee');
+            background.setAttribute('stroke-width', '2');
+            
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            path.setAttribute('cx', '18');
+            path.setAttribute('cy', '18');
+            path.setAttribute('r', '16');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', colors[color]);
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('stroke-dasharray', `${value}, 100`);
+            path.setAttribute('stroke-linecap', 'round');
+            path.style.transform = 'rotate(-90deg)';
+            path.style.transformOrigin = '50% 50%';
+            path.style.transition = 'stroke-dasharray 1s ease-in-out';
+            
+            svg.appendChild(background);
+            svg.appendChild(path);
+            circle.appendChild(svg);
+            
+            // Add percentage text
+            const text = document.createElement('div');
+            text.classList.add('position-absolute', 'top-50', 'start-50', 'translate-middle');
+            text.innerHTML = `${Math.round(value)}%`;
+            circle.appendChild(text);
+        });
+    });
+    
+    // Toast notifications
+    $(document).ready(function() {
+        $('.toast').toast({ delay: 5000 });
+        $('.toast').toast('show');
+    });
+    
+    // Form validation
+    document.getElementById('roomForm').addEventListener('submit', function(e) {
+        const price = parseFloat(document.getElementById('price').value);
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        
+        if (discount > 100) {
+            e.preventDefault();
+            alert('Discount cannot be more than 100%');
+            return false;
+        }
+        
+        if (price <= 0) {
+            e.preventDefault();
+            alert('Price must be greater than 0');
+            return false;
+        }
+    });
+</script>
+{% endblock scripts %}

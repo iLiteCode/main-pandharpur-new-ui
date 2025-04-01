@@ -1,9 +1,9 @@
 JAZZMIN_SETTINGS = {
     "site_title": "Pandharpur Admin",
     "site_header": "Pandharpur",
-    "site_brand": "Pandharpur Management",
+    "site_brand": "PandharpurGuid",
     "site_logo": "assets/img/favicon.png",  
-    "site_logo_classes": "img-circle",
+    "site_logo_classes": "img-circle logo-100px",  # Added custom class for 100px width
     "custom_css": "css/custom_admin.css",  
     "custom_js": "js/custom_admin.js",  
     "site_icon": "assets/img/favicon.png",  # Add favicon

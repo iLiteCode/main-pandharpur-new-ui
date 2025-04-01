@@ -149,9 +149,6 @@
       }
 
 /* end dark mode (toggle)button */
-
-
-
 .popup-container {
   position: fixed;
   top: 0;
@@ -160,82 +157,184 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 1000;
+  padding-top: 80px;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .popup {
   background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 20px 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   max-width: 90%;
-  width: 400px;
+  width: 420px;
   pointer-events: auto;
-  animation: slideIn 0.3s ease-out;
+  animation: slideInDown 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
   margin: 10px;
   position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.alert-success { 
-  border-left: 4px solid #28a745; 
-  background-color: #d4edda;
+.popup::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
 }
-.alert-error { 
-  border-left: 4px solid #dc3545; 
-  background-color: #f8d7da;
+
+.alert-success {
+  border-left: none;
+  background-color: white;
 }
-.alert-info { 
-  border-left: 4px solid #17a2b8; 
-  background-color: #d1ecf1;
+
+.alert-success::before {
+  background-color: #28a745;
 }
-.alert-warning { 
-  border-left: 4px solid #ffc107; 
-  background-color: #fff3cd;
+
+.alert-error {
+  border-left: none;
+  background-color: white;
+}
+
+.alert-error::before {
+  background-color: #dc3545;
+}
+
+.alert-info {
+  border-left: none;
+  background-color: white;
+}
+
+.alert-info::before {
+  background-color: #17a2b8;
+}
+
+.alert-warning {
+  border-left: none;
+  background-color: white;
+}
+
+.alert-warning::before {
+  background-color: #ffc107;
 }
 
 .popup-content {
-  text-align: center;
+  text-align: left;
+  position: relative;
+  padding-left: 5px;
+}
+
+.popup-content p {
+  margin: 0 0 15px 0;
+  color: #4a4a4a;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.alert-success .popup-content::before {
+  content: '✓';
+  display: inline-block;
+  margin-right: 10px;
+  color: #28a745;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.alert-error .popup-content::before {
+  content: '✕';
+  display: inline-block;
+  margin-right: 10px;
+  color: #dc3545;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.alert-info .popup-content::before {
+  content: 'ℹ';
+  display: inline-block;
+  margin-right: 10px;
+  color: #17a2b8;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.alert-warning .popup-content::before {
+  content: '⚠';
+  display: inline-block;
+  margin-right: 10px;
+  color: #ffc107;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .popup-buttons {
   margin-top: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .cancel-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
-  color: #6c757d;
+  color: #9e9e9e;
   padding: 0;
   width: 24px;
   height: 24px;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  z-index: 2;
 }
 
-.cancel-btn:hover {
-  color: #35dc46;
+.alert-success .cancel-btn:hover {
+  color: #28a745;
+  transform: rotate(90deg);
+}
+
+.alert-error .cancel-btn:hover {
+  color: #dc3545;
+  transform: rotate(90deg);
+}
+
+.alert-info .cancel-btn:hover {
+  color: #17a2b8;
+  transform: rotate(90deg);
+}
+
+.alert-warning .cancel-btn:hover {
+  color: #ffc107;
+  transform: rotate(90deg);
 }
 
 .btn {
-  padding: 8px 20px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s;
   margin: 0 5px;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
 .btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
 }
 
 .close-btn {
@@ -243,42 +342,189 @@
   color: white;
 }
 
-@keyframes slideIn {
-  from {
-      transform: translateY(-100px);
-      opacity: 0;
+.alert-success .close-btn {
+  background: #28a745;
+}
+
+.alert-error .close-btn {
+  background: #dc3545;
+}
+
+.alert-info .close-btn {
+  background: #17a2b8;
+}
+
+.alert-warning .close-btn {
+  background: #ffc107;
+  color: #333;
+}
+
+/* Progress bar for auto-close timer */
+.popup::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  animation: progressBar 5s linear forwards;
+}
+
+.alert-success::after {
+  background-color: rgba(40, 167, 69, 0.3);
+}
+
+.alert-error::after {
+  background-color: rgba(220, 53, 69, 0.3);
+}
+
+.alert-info::after {
+  background-color: rgba(23, 162, 184, 0.3);
+}
+
+.alert-warning::after {
+  background-color: rgba(255, 193, 7, 0.3);
+}
+
+@keyframes progressBar {
+  0% {
+    width: 100%;
   }
-  to {
-      transform: translateY(0);
-      opacity: 1;
+  100% {
+    width: 0%;
   }
 }
 
-@keyframes slideOut {
+@keyframes slideInDown {
   from {
-      transform: translateY(0);
-      opacity: 1;
+    transform: translateY(-50px);
+    opacity: 0;
   }
   to {
-      transform: translateY(-100px);
-      opacity: 0;
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Available Rooms Success Message Styling */
+.availability-notice {
+  display: flex;
+  align-items: center;
+  background-color: #d4edda;
+  color: #28a745;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  animation: pulse 2s infinite;
+}
+
+.availability-notice i {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+/* Special Success Room Message */
+.popup.rooms-available {
+  background-color: white;
+  border-left: none;
+}
+
+.popup.rooms-available::before {
+  background-color: #28a745;
+}
+
+.rooms-available .popup-content {
+  display: flex;
+  align-items: center;
+}
+
+.check-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #28a745;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  margin-right: 15px;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
 @media (max-width: 480px) {
+  .popup-container {
+    padding-top: 40px;
+  }
+  
   .popup {
-      width: 90%;
-      padding: 15px;
+    width: 85%;
+    padding: 15px;
   }
   
   .btn {
-      padding: 6px 15px;
-      font-size: 14px;
+    padding: 8px 15px;
+    font-size: 13px;
   }
   
   .cancel-btn {
-      top: 5px;
-      right: 5px;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+  }
+  
+  .popup-content p {
+    font-size: 14px;
   }
 }
 
