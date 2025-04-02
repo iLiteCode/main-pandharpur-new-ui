@@ -1,3 +1,8 @@
+
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Staff-SignIn{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,11 +24,21 @@
             <form action="{% url 'user:staff_signup' %}" method="POST" id="signup-form">
                 <h3>Staff Sign Up</h3>
                 {% csrf_token %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <p class="hint-text text-danger">{{ message }}</p>
-                    {% endfor %}
-                {% endif %}
+               
+
+                {% comment %} {% if  messages  %}
+                {% for message in messages %}
+                <div class="popup alert-{{ message.tags }}" role="alert">
+                    <button class="cancel-btn" aria-label="Cancel">×</button>
+                    <div class="popup-content">
+                        <p>{{ message }}</p>
+                        <div class="popup-buttons">
+                            <button class="btn close-btn">Close</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %} {% endcomment %}
 
                 <div class="form-holder active">
                     <input type="email" class="form-control" name="username" placeholder="Email" required="required">
@@ -32,7 +47,7 @@
                     <input type="text" class="form-control" name="name" placeholder="Name" required="required">
                 </div>
                 <div class="form-holder">
-                    <input type="text" class="form-control" name="phone" placeholder="Phone Number" required="required">
+                    <input type="Number" class="form-control" name="phone" placeholder="Phone Number" required="required">
                 </div>
 
                 <!-- Password inputs with toggle -->
@@ -49,8 +64,8 @@
                 
                 
                 <div class="form-holder">
-                    <input type="checkbox" id="terms-checkbox"> I agree to all statements in <a href="#">Terms & Conditions</a>
-                        <span class="checkmark"></span>
+                    <input type="checkbox" id="terms-checkbox" checked> I agree to all statements in <a href="#">Terms & Conditions</a>
+                        <span class="checkmark"  ></span>
                 </div>
                
                 <div class="checkbox">
@@ -101,3 +116,4 @@
     <script src="{% static 'user/js/main.js' %}"></script>
 </body>
 </html>
+{% endblock %}

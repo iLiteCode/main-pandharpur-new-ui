@@ -274,7 +274,6 @@ def signup(request):
 
     return render(request, 'user_login/signup.html')
 
-# User Email Verification
 def verify_email(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -282,7 +281,19 @@ def verify_email(request, uidb64, token):
         if default_token_generator.check_token(user, token):
             user.is_active = True
             user.save()
-            return render(request, 'user_login/verification_success.html')
+
+            # Automatically log the user in after email verification
+            authenticated_user = authenticate(request, username=user.username, password=user.password)
+            if authenticated_user is not None:
+                login(request, authenticated_user)
+
+            # Optional: Log the time when the user is logged in
+            ist = pytz.timezone('Asia/Kolkata')
+            signin_time = timezone.now().astimezone(ist).strftime('%Y-%m-%d %H:%M:%S')
+            messages.success(request, f'Account verified successfully and logged in at {signin_time}')
+
+            return redirect('myapp:home')  # Redirect to a page after successful login
+
         else:
             return render(request, 'user_login/verification_failure.html')
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
