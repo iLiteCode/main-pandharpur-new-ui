@@ -1,5 +1,6 @@
-
-{% block body %}
+{% extends 'rooms/room_basic.html' %}
+{% block title %}View Room {% endblock title %}
+ {% block content %}
 {% load static %}
 <html>
     <head>
@@ -19,10 +20,7 @@
     <div class="room-number">
     {{ room.room_number }} 
     </div>
-    <div class="header">
-       
-        
-    </div>
+    
     <div class="sub-header">
         Pandharpur-Shri Vitthal Rukmini Bhakta Niwas 
     </div>
@@ -61,7 +59,7 @@
         
             <!-- Full-screen Modal -->
             <div id="imageModal" class="modal">
-                <span class="close" onclick="closeFullScreen()">&times;</span>
+                <span class="close" onclick="closeFullScreen()"style="color:black; >&times;</span>
                 <img id="fullImage" class="modal-content" src="" alt="Full screen image">
             </div>
             </div>
@@ -367,7 +365,7 @@
                     </p>
                 </div>
                 <div>
-                    <button class="continue-button">Continue to Book</button>
+                    <button class="continue-button">Continue to Book </button>
                 </div>
             </div>
         </div>
@@ -420,239 +418,12 @@
                 </div>
                 <button class="action-button book-button">Continue to Book</button>
             </div>
-          </div>
-         </div>
-        </div>
-
-        <style>
-            :root {
-                --primary-color: #2c3e50;
-                --secondary-color: #34495e;
-                --accent-color: #3498db;
-                --background-light: #ecf0f1;
-            }
-    
-            body {
-                font-family: 'Roboto', sans-serif;
-                background-color: var(--background-light);
-                margin: 0;
-                padding: 20px;
-            }
-    
-            .action-button, 
-            .continue-button {
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                margin: 10px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-family: 'Roboto', sans-serif;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            }
-    
-            .action-button:hover, 
-            .continue-button:hover {
-                background-color: var(--secondary-color);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-            }
-    
-            .popup-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0,0,0,0.5);
-                z-index: 999;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-    
-            .popup {
-                display: none;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) scale(0.7);
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-                z-index: 1000;
-                width: 90%;
-                max-width: 600px;
-                max-height: 90vh;
-                overflow-y: auto;
-                opacity: 0;
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                font-family: 'Roboto', sans-serif;
-            }
-    
-            .popup.show {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-    
-            .popup-overlay.show {
-                opacity: 1;
-            }
-    
-            .popup-content {
-                padding: 30px;
-            }
-    
-            .close-popup {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                font-size: 24px;
-                color: var(--secondary-color);
-                cursor: pointer;
-                transition: color 0.3s ease;
-            }
-    
-            .close-popup:hover {
-                color: var(--accent-color);
-            }
-    
-            .form-group {
-                margin-bottom: 15px;
-            }
-    
-            .form-group label {
-                display: block;
-                margin-bottom: 5px;
-                color: var(--secondary-color);
-                font-weight: 700;
-            }
-    
-            .form-control {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-family: 'Roboto', sans-serif;
-            }
-    
-            .btn-primary {
-                background-color: var(--accent-color);
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-    
-            .btn-primary:hover {
-                background-color: #2980b9;
-            }
-        </style>
-
-{% comment %} popup  {% endcomment %}
-<div class="popup-overlay"></div>
-<div class="popup">
-    <span class="close-popup">✖</span>
-    <div class="popup-content">
-        <div class="row">
-            <div class="col-12">
-                <form action="{% url 'bookroom' %}" method="POST">
-                    {% csrf_token %}
-                    {% load app_tags %}
-                    <br>
-                    <button class="action-button login-button">check and update for Booking the</button>
-                    <div class="form-group">
-                        <label for="hotel">Hotel:</label>
-                        <input type="text" class="form-control" id="hotel" name="hotel" disabled value="{{ room.hotel.name }}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="location">Location:</label>
-                        <input type="text" class="form-control" id="location" name="location" disabled value="{{ room.hotel.location }}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required value="{{ request.user }}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="person">Person:</label>
-                        <input type="number" class="form-control" id="person" name="person" min="1" max="{{ room.capacity }}" required value="{{ room.capacity }}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cin">Check-in:</label>
-                        <input type="date" class="form-control" id="cin" name="check_in" min="{% todays_date %}" max="{% max_date %}" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cout">Check-out:</label>
-                        <input type="date" class="form-control" id="cout" name="check_out" min="{% tommorow %}" max="{% max_date %}" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="check_in_time">Check-In Time:</label>
-                        <input type="text" class="form-control" id="check_in_time" name="check_in_time" disabled value="{{ room.check_in_time|default_if_none:'N/A' }}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="check_out_time">Check-Out Time:</label>
-                        <input type="text" class="form-control" id="check_out_time" name="check_out_time" disabled value="{{ room.check_out_time|default_if_none:'N/A' }}">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">Book Now</button>
-                    <input type="hidden" name="room_id" value="{{ room.id }}">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const popupOverlay = document.querySelector('.popup-overlay');
-        const popup = document.querySelector('.popup');
-        const bookButtons = document.querySelectorAll('.action-button.book-button, .continue-button');
-        const closePopup = document.querySelector('.close-popup');
-
-        function openPopup() {
-            popupOverlay.classList.add('show');
-            popup.classList.add('show');
-        }
-
-        function closePopupFunc() {
-            popupOverlay.classList.remove('show');
-            popup.classList.remove('show');
             
-            // Small delay to allow animation to complete before hiding
-            setTimeout(() => {
-                popupOverlay.style.display = 'none';
-                popup.style.display = 'none';
-            }, 300);
-        }
+</div>
+    </div>
+    </div>
 
-        bookButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                popupOverlay.style.display = 'block';
-                popup.style.display = 'block';
-                
-                // Small delay to trigger CSS transition
-                setTimeout(openPopup, 10);
-            });
-        });
 
-        closePopup.addEventListener('click', closePopupFunc);
-        popupOverlay.addEventListener('click', closePopupFunc);
-    });
-</script>
     
     <div class="container-fluid px-4">
         <hr>
@@ -728,132 +499,8 @@
 </body>
 </html>
 
- {% endblock body %}
+ {% endblock  %}
  
  
  
  
- 
- 
-
-
-
-
-
-
-
-
-
-
-{% comment %} {% extends 'basic.html' %} {% block title %}Book Room {% endblock title %} {% block body %}
-<div class="container">
-
-    <div class="row">
-        <div class="col-md-6 col-lg-6 col-xlg-6 col-sm-12 mx-auto my-4">
-            <form action="/user/book-room/book" method="POST">
-                {% csrf_token %}
-                {% load app_tags %}
-                
-                <div class="form-group">
-                    <label for="hotel">Hotel:</label>
-                    <input type="text" class="form-control" id="hotel" name="hotel" disabled value="{{ room.hotel.name }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="location">Location:</label>
-                    <input type="text" class="form-control" id="location" name="location" disabled value="{{ room.hotel.location }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" class="form-control" id="username" name="username" required value="{{ request.user }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="person">Person:</label>
-                    <input type="number" class="form-control" id="person" name="person" min="1" max="{{ room.capacity }}" required value="{{ room.capacity }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="cin">Check-in:</label>
-                    <input type="date" class="form-control" id="cin" name="check_in" min="{% todays_date %}" max="{% max_date %}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="cout">Check-out:</label>
-                    <input type="date" class="form-control" id="cout" name="check_out" min="{% tommorow %}" max="{% max_date %}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="roomtype">Room Type:</label>
-                    <input type="text" class="form-control" id="roomtype" name="roomtype" disabled value="{{ room.get_room_type_display }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="discount">Discount (%):</label>
-                    <input type="number" step="0.01" class="form-control" id="discount" name="discount" disabled value="{{ room.discount }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="price">Price:</label>
-                    <input type="number" class="form-control" id="price" name="price" disabled value="{{ room.price }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="size">Room Size:</label>
-                    <input type="text" class="form-control" id="size" name="size" disabled value="{{ room.size }} sq.ft">
-                </div>
-                
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" disabled>{{ room.description }}</textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="heading">Heading:</label>
-                    <input type="text" class="form-control" id="heading" name="heading" disabled value="{{ room.heading }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="food_facility">Food Facility:</label>
-                    <input type="text" class="form-control" id="food_facility" name="food_facility" disabled value="{{ room.food_facility|yesno:'Yes,No' }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="parking">Parking:</label>
-                    <input type="text" class="form-control" id="parking" name="parking" disabled value="{{ room.parking|yesno:'Yes,No' }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="check_in_time">Check-In Time:</label>
-                    <input type="text" class="form-control" id="check_in_time" name="check_in_time" disabled value="{{ room.check_in_time|default_if_none:'N/A' }}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="check_out_time">Check-Out Time:</label>
-                    <input type="text" class="form-control" id="check_out_time" name="check_out_time" disabled value="{{ room.check_out_time|default_if_none:'N/A' }}">
-                </div>
-                
-                <div class="form-group">
-                    <label>Room Images:</label>
-                    <div>
-                        {% if room.image1 %}
-                            <img src="{{ room.image1.url }}" alt="Image 1" class="img-thumbnail" style="width: 100px; height: 100px;">
-                        {% endif %}
-                        {% if room.image2 %}
-                            <img src="{{ room.image2.url }}" alt="Image 2" class="img-thumbnail" style="width: 100px; height: 100px;">
-                        {% endif %}
-                        {% if room.image3 %}
-                            <img src="{{ room.image3.url }}" alt="Image 3" class="img-thumbnail" style="width: 100px; height: 100px;">
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Book Now</button>
-                <input type="hidden" name="room_id" value="{{ room.id }}">
-            </form>
-        </div>
-    </div>
-    
-</div>
-{% endblock body %} {% endcomment %}

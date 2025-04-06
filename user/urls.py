@@ -23,7 +23,7 @@ urlpatterns = [
     path('password-resets/done/', PasswordResetDoneView.as_view(template_name='staff_login/staff_password_reset_done.html'), name='staff_password_reset_done'),
     path('staff/password/reset/<uidb64>/<token>/', views.StaffCustomPasswordResetConfirmView.as_view(
     template_name='staff_login/staff_password_reset_confirm.html'
-), name='staff_password_reset_confirm'),
+    ), name='staff_password_reset_confirm'),
     path('password-reset-completes/', PasswordResetCompleteView.as_view(template_name='staff_login/staff_password_reset_complete.html'), name='staff_password_reset_complete'),
 
     # User-related paths (non-staff)

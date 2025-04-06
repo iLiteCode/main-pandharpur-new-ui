@@ -39,8 +39,10 @@
                 <li class="dropdown">
                     <a href="#"><span>Maintainer checik</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
-                        <li><a href="{% url 'staffpanel' %}">maintainer</a></li>
-                        <li><a href="{% url 'allbookings' %}">maintainer Bookings</a></li>
+                        <li><a href="{% url 'assign-hotel' %}">hotel assigned</a></li>
+                        <li><a href="{% url 'maintainer_panel' %}">maintainer</a></li>
+                        <li><a href="{% url 'maintainer_all_bookings' %}">maintainer Bookings</a></li>
+                        <li><a href="{% url 'maintainer_view_hotels' %}">View Hotels</a></li>
                     </ul>
                 </li>
   
@@ -49,6 +51,8 @@
                 <li class="dropdown">
                     <a href="#"><span>Staff Check</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
+                        <li><a href="{% url 'assign-hotel' %}">hotel assigned</a></li>
+                        
                         <li><a href="{% url 'staffpanel' %}">Dashboard</a></li>
                         <li><a href="{% url 'allbookings' %}"> My Bookings</a></li>
                     </ul>

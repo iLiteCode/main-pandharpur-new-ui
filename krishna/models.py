@@ -5,20 +5,37 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
 
 
+from django.db import models
 
-# Create your models here.
 class Hotels(models.Model):
-    #h_id,h_name,owner ,location,rooms
-    name = models.CharField(max_length=30,default="tiranga")
-    owner = models.CharField(max_length=20)
-    location = models.CharField(max_length=50)
-    state = models.CharField(max_length=50,default="maharashtra")
-    country = models.CharField(max_length=50,default="india")
+    name = models.CharField(max_length=30, default="tiranga", blank=False, null=False)
+    owner = models.CharField(max_length=20, blank=False, null=False)
+    location = models.CharField(max_length=50, blank=False, null=False)
+    state = models.CharField(max_length=50, default="maharashtra", blank=False, null=False)
+    country = models.CharField(max_length=50, default="india", blank=False, null=False)
+    assigned_staff = models.ManyToManyField(
+        'user.HotelStaff', 
+        related_name='assigned_hotels',
+        blank=True
+    )
+    created_by = models.ForeignKey(
+        'user.HotelStaff',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_hotels'
+    )
+
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.location})"
 
-
-
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'owner', 'state', 'country', 'location'], 
+                name='unique_hotel_constraint'
+            )
+        ]
 class Rooms(models.Model):
     ROOM_STATUS = (
         ("1", "available"),
@@ -31,22 +48,23 @@ class Rooms(models.Model):
         ("3", "basic"),
     )
 
-    # Room details
     room_type = models.CharField(max_length=50, choices=ROOM_TYPE)
-    capacity = models.IntegerField(validators=[MinValueValidator(1)])  # Minimum 1 occupant
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Supports larger and precise pricing
+    capacity = models.IntegerField(validators=[MinValueValidator(1)])
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     size = models.IntegerField(help_text="Room size in square feet")
     hotel = models.ForeignKey('Hotels', on_delete=models.CASCADE, related_name='rooms')
-    status = models.CharField(choices=ROOM_STATUS, max_length=15)
-    room_number = models.CharField(max_length=10, null=True)  # Removed `unique=True`
+    status = models.CharField(
+        max_length=1,  # Fixed length to match choices
+        choices=ROOM_STATUS,
+        default="1"
+    )
+    room_number = models.CharField(max_length=10, null=True)
 
-    # Discounts
     discount = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         default=0.0,
-        validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
-        help_text="Discount percentage (0-100%)"
+        validators=[MinValueValidator(0.0), MaxValueValidator(100.0)]
     )
 
     # Ratings and reviews
@@ -169,14 +187,13 @@ class Replies(models.Model):
         return f"Reply by {self.user.username} on {self.comment}"
 
 class Reservation(models.Model):
-
-    check_in = models.DateField(auto_now =False)
+    check_in = models.DateField()
     check_out = models.DateField()
-    room = models.ForeignKey(Rooms, on_delete = models.CASCADE)
-    guest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete= models.CASCADE)
-    
-    booking_id = models.CharField(max_length=100,default="null")
+    room = models.ForeignKey(Rooms, on_delete=models.CASCADE, related_name='reservations')
+    guest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    booking_id = models.CharField(max_length=100, default="null")
+
     def __str__(self):
-        return self.guest.username
+        return f"Reservation for {self.guest.username} - Room {self.room.room_number}"
 
 

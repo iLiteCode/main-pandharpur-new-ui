@@ -1,16 +1,17 @@
-
-
-
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Hotels, Rooms, Comments, Replies, Reservation
+from user.models import HotelStaff
+from django.contrib import messages
+from django.db import IntegrityError
+from django.shortcuts import redirect
 
+# Existing admin classes (unchanged)
 @admin.register(Hotels)
 class HotelsAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'location', 'state', 'country')
     search_fields = ('name', 'owner', 'location')
     list_filter = ('state', 'country')
-
 
 @admin.register(Rooms)
 class RoomsAdmin(admin.ModelAdmin):
@@ -21,7 +22,6 @@ class RoomsAdmin(admin.ModelAdmin):
     list_filter = ('hotel', 'room_type', 'status', 'languages_spoken', 'food_facility', 'parking', 'wifi', 'ac', 'fan', 'heater', 'cleanliness')
     search_fields = ('room_number', 'hotel__name', 'description', 'heading')
     readonly_fields = ('image_preview', 'discounted_price', 'saved_money')
-
     fieldsets = (
         ("Basic Information", {
             'fields': ('hotel', 'room_number', 'room_type', 'capacity', 'price', 'discount', 'discounted_price', 'saved_money', 'status')
@@ -50,22 +50,18 @@ class RoomsAdmin(admin.ModelAdmin):
     )
 
     def image_preview(self, obj):
-        """Display the first image as a preview in the admin panel."""
         if obj.image1:
             return format_html('<img src="{}" style="width: 100px; height: auto;" />'.format(obj.image1.url))
         return "No Image Available"
     image_preview.short_description = "Image Preview"
 
     def discounted_price(self, obj):
-        """Display the discounted price in admin."""
         return f"₹{obj.discounted_price():.2f}"
     discounted_price.short_description = "Discounted Price"
 
     def saved_money(self, obj):
-        """Display the saved money in admin."""
         return f"₹{obj.saved_money():.2f}"
     saved_money.short_description = "Saved Money"
-
 
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
@@ -73,16 +69,12 @@ class CommentsAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
     search_fields = ('room__room_number', 'user__username', 'comment_text')
 
-
 @admin.register(Replies)
 class RepliesAdmin(admin.ModelAdmin):
     list_display = ('comment', 'user', 'reply_text', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('comment__comment_text', 'user__username', 'reply_text')
 
-from django.db import IntegrityError
-from django.contrib import messages
-from django.shortcuts import redirect
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ('guest', 'room', 'check_in', 'check_out', 'booking_id')
@@ -94,7 +86,9 @@ class ReservationAdmin(admin.ModelAdmin):
             return super().changelist_view(request, extra_context)
         except IntegrityError as e:
             if "FOREIGN KEY constraint failed" in str(e):
-                messages.error(request, "Cannot complete this action due to a foreign key constraint. Check related data. check authority and verifications as admin...")
+                messages.error(request, "Cannot complete this action due to a foreign key constraint. Check related data.")
             else:
                 messages.error(request, f"An error occurred: {str(e)}")
             return redirect('admin:krishna_reservation_changelist')
+
+# New HotelStaff admin
