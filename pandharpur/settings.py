@@ -52,10 +52,10 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Add this line
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -63,11 +63,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 CSRF_TRUSTED_ORIGINS = [
     'https://75b8-2406-9e00-111e-7053-156c-4118-c86b-95c2.ngrok-free.app',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Account settings
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # or 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'  # 'mandatory', 'none'
+LOGIN_REDIRECT_URL = '/'  # Where to redirect after login
 
 ROOT_URLCONF = 'pandharpur.urls'
 
