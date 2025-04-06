@@ -2,23 +2,18 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.shortcuts import redirect
 from django.utils.html import format_html
-from .models import User, HotelStaff, Maintainer
-from django.contrib import messages
-from django.db import IntegrityError
-
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.shortcuts import redirect
-from django.utils.html import format_html
 from django.contrib import messages
 from django.db import IntegrityError
 from .models import User, HotelStaff, Maintainer
+from krishna.models import Hotels
+from django.urls import path
 
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
     # List display configuration
     list_display = (
         'username', 'name', 'phone', 'email', 'is_staff', 'is_verified_link', 
-        'paid_member', 'colored_permission_status',  # Add this new field
+        'paid_member', 'colored_permission_status',
         'profile_image_preview', 'aadhar_image_preview', 'pancard_image_preview'
     )
     list_editable = ('name', 'phone', 'email', 'paid_member')
@@ -29,7 +24,17 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password', 'name', 'phone', 'email')}),
         ('Personal Documents', {'fields': ('profile_image', 'aadhar_image', 'pancard_image')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_verified', 'groups', 'user_permissions')}),
+        ('Permissions', {
+            'fields': (
+                'is_active', 
+                'is_staff', 
+                'is_superuser', 
+                'is_verified', 
+                'is_authority_to_manage_hotel',  # Added here
+                'groups', 
+                'user_permissions'
+            )
+        }),
         ('Membership', {'fields': ('paid_member',)}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
     )
@@ -37,18 +42,33 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'name', 'phone', 'email', 'password1', 'password2', 'is_staff', 'is_verified', 
-                       'paid_member', 'profile_image', 'aadhar_image', 'pancard_image'),
+            'fields': (
+                'username', 
+                'name', 
+                'phone', 
+                'email', 
+                'password1', 
+                'password2', 
+                'is_staff', 
+                'is_verified',
+                'is_authority_to_manage_hotel',  # Added here as well for the add form
+                'paid_member', 
+                'profile_image', 
+                'aadhar_image', 
+                'pancard_image'
+            ),
         }),
     )
     
+    # ... Rest of your existing code remains unchanged ...
+    
+    # Assuming the rest of your methods remain the same
     # Actions
     actions = ['verify_users', 'unverify_users']
     
-    # Media class for CSS
     class Media:
         css = {
-            'all': ('css/admin_user_colors.css',)  # Optional: for additional styling
+            'all': ('css/admin_user_colors.css',)
         }
     
     # Custom methods for list display
@@ -164,7 +184,6 @@ class UserAdmin(BaseUserAdmin):
     # Save and change view methods
     def save_model(self, request, obj, form, change):
         try:
-            # Check if the user has authority to make this change
             if not request.user.is_superuser and not (hasattr(request.user, 'maintainer_profile') and request.user.maintainer_profile.is_verified):
                 self.message_user(
                     request,
@@ -172,7 +191,6 @@ class UserAdmin(BaseUserAdmin):
                     level=messages.ERROR
                 )
                 return
-            # Attempt to save the object
             super().save_model(request, obj, form, change)
         except IntegrityError as e:
             if "FOREIGN KEY constraint failed" in str(e):
@@ -206,27 +224,45 @@ class UserAdmin(BaseUserAdmin):
                 )
             return redirect('admin:user_user_changelist')
 
-
+# Updated HotelStaffAdmin
+@admin.register(HotelStaff)
 class HotelStaffAdmin(admin.ModelAdmin):
     list_display = (
-        'staff_id', 'user_link', 'department', 'hire_date', 'is_active_staff', 'hotel_gst_no', 
-        'alternate_mobile_no', 'landline_no', 'shop_main_image_preview', 'shop_license_image_preview', 
-        'shop_aadhar_image_preview', 'owner_pan_image_preview', 'owner_aadhar_image_preview'
+        'staff_id', 'user_link', 'hotel_link', 'department', 'hire_date', 'is_active_staff', 
+        'hotel_gst_no', 'alternate_mobile_no', 'landline_no', 'shop_main_image_preview', 
+        'shop_license_image_preview', 'shop_aadhar_image_preview', 'owner_pan_image_preview', 
+        'owner_aadhar_image_preview'
     )
     list_editable = ('department', 'is_active_staff', 'hotel_gst_no', 'alternate_mobile_no', 'landline_no')
     list_filter = ('department', 'is_active_staff')
-    search_fields = ('staff_id', 'user__username', 'hotel_gst_no')
+    search_fields = ('staff_id', 'user__username', 'hotel__name', 'hotel_gst_no')
     
     fieldsets = (
-        (None, {'fields': ('user', 'staff_id', 'department', 'hotel_gst_no', 'alternate_mobile_no', 'landline_no')}),
-        ('Status', {'fields': ('hire_date', 'is_active_staff')}),
-        ('Images', {'fields': ('shop_main_image', 'shop_license_image', 'shop_aadhar_image', 'owner_pan_image', 'owner_aadhar_image')}),
+        (None, {
+            'fields': ('user', 'staff_id', 'hotel', 'department', 'hotel_gst_no', 'alternate_mobile_no', 'landline_no')
+        }),
+        ('Hotel Details', {
+            'fields': ('hotel_name', 'location', 'state', 'country')
+        }),
+        ('Status', {
+            'fields': ('hire_date', 'is_active_staff')
+        }),
+        ('Images', {
+            'fields': ('shop_main_image', 'shop_license_image', 'shop_aadhar_image', 'owner_pan_image', 'owner_aadhar_image')
+        }),
     )
     readonly_fields = ('hire_date',)
+    autocomplete_fields = ['user', 'hotel']
 
     def user_link(self, obj):
         return format_html('<a href="{}">{}</a>', f'/admin/user/user/{obj.user.pk}/change/', obj.user.username)
     user_link.short_description = 'User'
+
+    def hotel_link(self, obj):
+        if obj.hotel:
+            return format_html('<a href="{}">{}</a>', f'/admin/krishna/hotels/{obj.hotel.pk}/change/', obj.hotel.name)
+        return "No Hotel Assigned"
+    hotel_link.short_description = 'Hotel'
 
     def shop_main_image_preview(self, obj):
         return format_html('<img src="{}" width="50" />', obj.shop_main_image.url) if obj.shop_main_image else "No Image"
@@ -251,6 +287,8 @@ class HotelStaffAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'user':
             kwargs['queryset'] = User.objects.filter(is_staff=True)
+        elif db_field.name == 'hotel':
+            kwargs['queryset'] = Hotels.objects.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def has_add_permission(self, request):
@@ -259,6 +297,11 @@ class HotelStaffAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user', 'hotel')
+
+# Updated MaintainerAdmin
+@admin.register(Maintainer)
 class MaintainerAdmin(admin.ModelAdmin):
     list_display = (
         'maintainer_id', 'user_link', 'name', 'phone_no', 'alternate_phone_no', 'designation',
@@ -280,14 +323,27 @@ class MaintainerAdmin(admin.ModelAdmin):
         if not obj.is_verified:
             return "Maintainer must be verified to manage users."
         users = User.objects.exclude(maintainer_profile__isnull=False).order_by('username')
+        hotel_staff = HotelStaff.objects.all()
         user_list = []
+
         for user in users:
             status = "Verified" if user.is_verified else "Not Verified"
             toggle_url = f'/admin/user/user/{user.pk}/toggle_verified/'
             user_list.append(
                 format_html('<li><a href="{}">{}</a> ({})</li>', toggle_url, user.username, status)
             )
-        return format_html('<ul>{}</ul>', format_html(''.join(user_list))) if user_list else "No users to manage."
+
+        for staff in hotel_staff:
+            hotel_status = staff.hotel.name if staff.hotel else "No Hotel Assigned"
+            assign_url = f'/admin/user/hotelstaff/{staff.pk}/assign_hotel/'
+            user_list.append(
+                format_html(
+                    '<li><a href="{}">{}</a> (Staff ID: {}) - Hotel: {} [<a href="{}">Assign/Edit Hotel</a>]</li>',
+                    f'/admin/user/user/{staff.user.pk}/change/', staff.user.username, staff.staff_id, hotel_status, assign_url
+                )
+            )
+
+        return format_html('<ul>{}</ul>', format_html(''.join(user_list))) if user_list else "No users or staff to manage."
     managed_users_list.short_description = "Users & Hotel Staff"
 
     def user_link(self, obj):
@@ -343,10 +399,10 @@ class MaintainerAdmin(admin.ModelAdmin):
     unverify_maintainers.short_description = "Unverify selected maintainers"
 
     def get_urls(self):
-        from django.urls import path
         urls = super().get_urls()
         custom_urls = [
             path('<int:maintainer_id>/toggle_verified/', self.admin_site.admin_view(self.toggle_verified), name='toggle_verified'),
+            path('hotelstaff/<int:staff_id>/assign_hotel/', self.admin_site.admin_view(self.assign_hotel), name='assign_hotel'),
         ]
         return custom_urls + urls
 
@@ -362,6 +418,26 @@ class MaintainerAdmin(admin.ModelAdmin):
             maintainer.user.save()
             self.message_user(request, f"Maintainer {maintainer.maintainer_id} verification status updated to {maintainer.is_verified}.")
         return redirect('admin:user_maintainer_changelist')
+
+    def assign_hotel(self, request, staff_id):
+        if not request.user.is_superuser and not (hasattr(request.user, 'maintainer_profile') and request.user.maintainer_profile.is_verified):
+            self.message_user(request, "Only superusers or verified maintainers can assign hotels.", level='error')
+            return redirect('admin:user_maintainer_changelist')
+
+        staff = HotelStaff.objects.get(pk=staff_id)
+        if request.method == "POST":
+            hotel_id = request.POST.get('hotel_id')
+            try:
+                hotel = Hotels.objects.get(id=hotel_id)
+                staff.hotel = hotel
+                staff.save()
+                self.message_user(request, f"Hotel {hotel.name} assigned to staff {staff.staff_id}.")
+                return redirect('admin:user_maintainer_changelist')
+            except Hotels.DoesNotExist:
+                self.message_user(request, "Selected hotel does not exist.", level='error')
+
+        hotels = Hotels.objects.all()
+        return render(request, 'admin/assign_hotel.html', {'staff': staff, 'hotels': hotels})
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -385,10 +461,8 @@ class MaintainerAdmin(admin.ModelAdmin):
     
     def change_view(self, request, object_id, form_url='', extra_context=None):
         try:
-            # Attempt to execute the default change_view logic
             return super().change_view(request, object_id, form_url, extra_context)
         except IntegrityError as e:
-            # Handle the IntegrityError and display a custom message
             if "FOREIGN KEY constraint failed" in str(e):
                 self.message_user(
                     request,
@@ -401,12 +475,4 @@ class MaintainerAdmin(admin.ModelAdmin):
                     f"An error occurred: {str(e)}",
                     level=messages.ERROR
                 )
-            # Redirect back to the change page or changelist
-            return redirect('admin:user_user_changelist')
-
-# Register all models with the admin site
-admin.site.register(User, UserAdmin)
-admin.site.register(HotelStaff, HotelStaffAdmin)
-admin.site.register(Maintainer, MaintainerAdmin)
-
-
+            return redirect('admin:user_maintainer_changelist')

@@ -58,3 +58,18 @@ class RoomForm(forms.ModelForm):
             if not (check_out_time_str.endswith('AM') or check_out_time_str.endswith('PM')):
                 raise forms.ValidationError("Check-out time must be in the correct format (e.g., '12:00 PM').")
         return check_out_time
+
+
+from django import forms
+from user.models import HotelStaff
+
+class HotelAssignmentForm(forms.ModelForm):
+    class Meta:
+        model = HotelStaff
+        fields = ['hotel']
+        labels = {
+            'hotel': 'Assigned Hotel'
+        }
+        widgets = {
+            'hotel': forms.Select(attrs={'class': 'form-control'})
+        }

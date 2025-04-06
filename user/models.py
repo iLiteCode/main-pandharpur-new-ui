@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+from krishna.models import Rooms, Hotels
 
 class User(AbstractUser):
+    is_authority_to_manage_hotel = models.BooleanField(default=False)
     name = models.CharField(max_length=50, default='Users no name mentioned')
     phone = models.CharField(max_length=20, default='8888888888')
     paid_member = models.BooleanField(default=False)
@@ -18,8 +20,10 @@ class User(AbstractUser):
         return self.username
 
 class HotelStaff(models.Model):
+    position = models.CharField(max_length=100, blank=True, null=True)
+    hotel = models.ForeignKey(Hotels, on_delete=models.CASCADE, related_name='staff',null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='hotel_staff_profile')
-    staff_id = models.CharField(max_length=10, unique=True)
+    staff_id = models.CharField(max_length=20, unique=True, db_index=True)
     department = models.CharField(max_length=50, choices=[('reception', 'Reception'), ('housekeeping', 'Housekeeping'), ('management', 'Management'), ('kitchen', 'Kitchen')], default='reception')
     hire_date = models.DateField(auto_now_add=True)
     is_active_staff = models.BooleanField(default=True)
@@ -58,6 +62,7 @@ class Maintainer(models.Model):
     name = models.CharField(max_length=50)
     phone_no = models.CharField(max_length=20)
     alternate_phone_no = models.CharField(max_length=20, null=True, blank=True)
+    is_authority_to_manage_hotel= models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)  # Verified by superuser
     hire_date = models.DateField(auto_now_add=True)
     designation = models.CharField(
